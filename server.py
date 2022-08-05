@@ -1,0 +1,24 @@
+from flask import Flask, render_template
+import firebase_admin
+from firebase_admin import credentials
+from firebase_admin import db
+
+app = Flask(__name__)
+
+#Firebase Setup
+cred = credentials.Certificate("firebase-key.json")
+firebase_admin.initialize_app(cred, {
+    'databaseURL': 'https://cost-mates-default-rtdb.firebaseio.com'
+})
+
+#Reference to the database
+ref = db.reference('/') 
+
+@app.route('/')
+def index():
+    return render_template("index.html")
+
+
+
+if __name__ == "__main__":
+    app.run(host='127.0.0.1', port=8080, debug=True)
