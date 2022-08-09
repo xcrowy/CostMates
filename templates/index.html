@@ -54,53 +54,9 @@
             </tr>
         </tbody>
     </table>
-
-    <script>
-        $(function() {
-            function moveColumn(table, sourceIndex, targetIndex) {
-                console.log("Move Col " + sourceIndex + " to " + targetIndex);
-                var body = $("tbody", table);
-                
-                $("tr", body).each(function(i, row) {
-                    console.log(i);
-                    if (sourceIndex < targetIndex){
-                        $("td", row).eq(sourceIndex-1).insertAfter($("td", row).eq(targetIndex-1));
-                    }
-                    else{
-                        $("td", row).eq(sourceIndex-1).insertBefore($("td", row).eq(targetIndex-1));
-                    }
-                });
-            }
-
-            $(".mytable > thead > tr").sortable({
-                items: "> th.sortme",
-                start: function(event, ui) {
-                    ui.item.data("source", ui.item.index());
-                },
-                update: function(event, ui) {
-                    moveColumn($(this).closest("table"), ui.item.data("source"), ui.item.index());
-                    $(".mytable > tbody").sortable("refresh");
-                }
-            });
-
-            $(".mytable > tbody").sortable({
-                handle: ".r",
-                items: "> tr.sortme"
-            });
-        });
-
-        function newRow() {
-            $("#table").find('tbody')
-                .append($('<tr>').attr('class','sortme')
-                    .append($('<th>').attr('scope', 'row').attr('class','r').text('NewRow'))
-                    .append($('<td>').text('closed'))
-                    .append($('<td>').text('closed'))
-                    .append($('<td>').text('closed'))
-                );
-        }
-    </script>
     
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-A3rJD856KowSb7dwlZdYEkO39Gagi7vIsF0jrRAoQmDKKtQBHUuLZ9AsSv4jD4Xa" crossorigin="anonymous"></script>
     <script src="../static/createTabs.js"></script>
+    <script src="../static/dragdropRowCol.js"></script>
 </body>
 </html>
