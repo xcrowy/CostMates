@@ -1,10 +1,8 @@
 $(function() {
     function moveColumn(table, sourceIndex, targetIndex) {
-        console.log("Move Col " + sourceIndex + " to " + targetIndex);
         var body = $("tbody", table);
         
         $("tr", body).each(function(i, row) {
-            console.log(i);
             if (sourceIndex < targetIndex){
                 $("td", row).eq(sourceIndex-1).insertAfter($("td", row).eq(targetIndex-1));
             }
