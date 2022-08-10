@@ -1,0 +1,37 @@
+.form-control-inline{
+    min-width: 300px;
+    width: auto;
+    display: inline;
+}
+
+.text-control-inline{
+    min-width: 50px;
+    width: auto;
+    display: inline;
+}
+
+.register-button-inline{
+    min-width: 25%;
+    min-height: 20%;
+    width: auto;
+    display: inline;
+    border: 1px solid black;
+    padding: 1%;
+    border-radius: 7px;
+    position: absolute;
+    left: 55%;
+    top: 200px;
+}
+
+.login-button-inline{
+    min-width: 25%;
+    min-height: 20%;
+    width: auto;
+    display: inline;
+    border: 1px solid black;
+    padding: 1%;
+    border-radius: 7px;
+    position: absolute;
+    left: 25%;
+    top: 200px;
+}
