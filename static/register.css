@@ -1,0 +1,11 @@
+.form-control-inline{
+    min-width: 300px;
+    width: auto;
+    display: inline;
+}
+
+.text-control-inline{
+    min-width: 50px;
+    width: auto;
+    display: inline;
+}

@@ -15,10 +15,16 @@ firebase_admin.initialize_app(cred, {
 ref = db.reference('/') 
 
 @app.route('/')
-def index():
-    return render_template("index.html")
+def landpage():
+    return render_template("landpage.html")
 
+@app.route('/login.html')
+def login():
+    return render_template("login.html")
 
+@app.route('/register.html')
+def register():
+    return render_template("register.html")
 
 if __name__ == "__main__":
     app.run(host='127.0.0.1', port=8080, debug=True)
