@@ -1,3 +1,4 @@
+from crypt import methods
 from flask import Flask, render_template
 import firebase_admin
 from firebase_admin import credentials
@@ -18,15 +19,15 @@ ref = db.reference('/')
 def landpage():
     return render_template("landpage.html")
 
-@app.route('/login.html')
+@app.route('/login', methods=['GET', 'POST'])
 def login():
     return render_template("login.html")
 
-@app.route('/register.html')
+@app.route('/register', methods=['GET', 'POST'])
 def register():
     return render_template("register.html")
 
-@app.route('/index.html')
+@app.route('/index')
 def index():
     return render_template("index.html")
 
