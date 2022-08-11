@@ -1,37 +1,28 @@
-.table-fixed thead,
-.table-fixed tbody,
-.table-fixed tr,
-.table-fixed td,
-.table-fixed th {
-    width: 100%;
-    display: table;
-    border-top: none;
-    border-width: 100%;
-    table-layout: fixed;
-    height: 45px;
-    overflow: hidden;
-    padding: 0.5rem;
-}
-
 .table-fixed tbody td,
 .table-fixed tbody th,
 .table-fixed thead > tr > th {
+    padding: 0.5rem;
     float: left;
     width: 100%;
+    height: 45px;
     position: relative;
     display: table-cell;
     white-space: nowrap;
     overflow: hidden;
+    table-layout: fixed;
 }
 
-.table-fixed tbody {
-    height: fit-content;
-    overflow-y: auto;
-    width: 100%;
+.table-fixed tbody td{
+    overflow-x: scroll;
+    white-space: nowrap;
 }
 
 .table-hover tbody tr:hover td, .table-hover tbody tr:hover th {
     background-color: #ffffff;
+}
+
+.table-fixed tbody td button{
+    font-size: .6rem;
 }
 
 body {
@@ -41,17 +32,4 @@ body {
     min-height: 100vh;
     padding: 20px;
 
-}
-
-.bi:hover {
-    color: #8eff7a;
-    /* background: #a8eb9c; */
-}
-
-.table-responsive {
-    overflow-y: scroll;
-}
-
-.table-fixed tbody td button{
-    font-size: .6rem;
 }
