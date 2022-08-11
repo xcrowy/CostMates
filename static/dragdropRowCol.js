@@ -56,11 +56,12 @@ $(function() {
 function newRow() {
     $("#table").find('tbody')
         .append($('<tr>').attr('class','sortme')
-            .append($('<th>').attr('scope', 'row').attr('class','r').addClass('col-1').text('NewRow'))
+            .append($('<th>').attr('scope', 'row').attr('class','r').addClass('col-1').text('New'))
             .append($('<td>').attr('class','col-4').text('closed'))
             .append($('<td>').attr('class','col-2').text('closed'))
             .append($('<td>').attr('class','col-2').text('closed'))
             .append($('<td>').attr('class','col-2').text('closed'))
-            .append($('<td>').attr('class','col-1').text('closed'))
+            .append($('<td>').attr('class','col-1').append($('<button>').attr('type','button')
+                .attr('class','btn').addClass('btn-outline-success').addClass('btn-sm').text('Archive')))
         );
 }
