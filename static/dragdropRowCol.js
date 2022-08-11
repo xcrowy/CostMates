@@ -1,4 +1,11 @@
 $(function() {
+    $("document").ready(function() {
+        $('#table').DataTable();
+    });
+});
+
+$(function() {
+
     function moveColumn(table, sourceIndex, targetIndex) {
         var body = $("tbody", table);
         
@@ -12,29 +19,55 @@ $(function() {
         });
     }
 
-    $(".mytable > thead > tr").sortable({
-        items: "> th.sortme",
+    $(".table > thead > tr").sortable({
         start: function(event, ui) {
             ui.item.data("source", ui.item.index());
+            clone = $(ui.item[0].outerHTML).clone();
         },
+
+        placeholder: {
+            element: function(clone, ui) {
+                return $('<th scope="row" class="col-2 r" style="opacity:50%">'+clone[0].innerHTML+'</th>');
+            },
+            update: function() {
+                return;
+            }},
+        items: "> th.sortme",
+        
         update: function(event, ui) {
             moveColumn($(this).closest("table"), ui.item.data("source"), ui.item.index());
-            $(".mytable > tbody").sortable("refresh");
+            $(".table > tbody").sortable("refresh");
         }
     });
 
-    $(".mytable > tbody").sortable({
+
+    $(".table > tbody").sortable({
+        start: function(event, ui) {
+            clone = $(ui.item[0].outerHTML).clone();
+            console.log(clone);
+        },
+        placeholder: {
+            element: function(clone, ui) {
+                return $('<tr class="sortme" style="opacity:50%">'+clone[0].innerHTML+'</tr>');
+            },
+            update: function() {
+                return;
+            }},
         handle: ".r",
         items: "> tr.sortme"
     });
+
+    
 });
 
 function newRow() {
     $("#table").find('tbody')
         .append($('<tr>').attr('class','sortme')
-            .append($('<th>').attr('scope', 'row').attr('class','r').text('NewRow'))
-            .append($('<td>').text('closed'))
-            .append($('<td>').text('closed'))
-            .append($('<td>').text('closed'))
+            .append($('<th>').attr('scope', 'row').attr('class','r').addClass('col-1').text('NewRow'))
+            .append($('<td>').attr('class','col-4').text('closed'))
+            .append($('<td>').attr('class','col-2').text('closed'))
+            .append($('<td>').attr('class','col-2').text('closed'))
+            .append($('<td>').attr('class','col-2').text('closed'))
+            .append($('<td>').attr('class','col-1').text('closed'))
         );
 }

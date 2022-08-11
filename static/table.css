@@ -1,0 +1,40 @@
+.table-fixed thead,
+.table-fixed tbody,
+.table-fixed tr,
+.table-fixed td,
+.table-fixed th {
+    width: 100%;
+    display: table;
+    border-top: none;
+    border-width: 100%;
+}
+
+.table-fixed tbody td,
+.table-fixed tbody th,
+.table-fixed thead > tr > th {
+    float: left;
+    width: 100%;
+    position: relative;
+    display: table-cell;
+    padding: 10px;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+.table-fixed tbody {
+    height: 300px;
+    overflow-y: auto;
+    width: 100%;
+}
+
+.table-hover tbody tr:hover td, .table-hover tbody tr:hover th {
+    background-color: #ffffff;
+}
+
+body {
+    background: #94ebdb;
+    background: -webkit-linear-gradient(to bottom, #93ebdb, #ffffbc);
+    background: linear-gradient(to bottom, #93ebdb, #ffffbc);
+    min-height: 100vh;
+
+}
