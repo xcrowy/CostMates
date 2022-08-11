@@ -21,7 +21,7 @@ $(function() {
 
         placeholder: {
             element: function(clone, ui) {
-                return $('<th scope="row" class="col-2 r" style="opacity:50%">'+clone[0].innerHTML+'</th>');
+                return $('<th scope="row" class="' + clone[0].classList[1] +' r" style="opacity:50%">'+clone[0].innerHTML+'</th>');
             },
             update: function() {
                 return;
