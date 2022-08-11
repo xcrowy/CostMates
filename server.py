@@ -65,13 +65,6 @@ def index():
 def create_user(userId: str, displayName: str, email: str, password: str) -> UserRecord:
     return auth.create_user(uid=userId, display_name=displayName, email=email, password=password)
 
-def check_email(email):
-    for user in auth.list_users().iterate_all():
-        if user.email == email:
-            return True
-        else:
-            return False
-
 
 def validate_password(email, password):
     hash = open('hash-key.json')
