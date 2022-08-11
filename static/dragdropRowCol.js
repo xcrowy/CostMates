@@ -1,10 +1,4 @@
 $(function() {
-    $("document").ready(function() {
-        $('#table').DataTable();
-    });
-});
-
-$(function() {
 
     function moveColumn(table, sourceIndex, targetIndex) {
         var body = $("tbody", table);
