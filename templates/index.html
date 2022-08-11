@@ -13,53 +13,56 @@
 <body>
 
     <h1>CostMates</h1>
+        
     <nav>
-        <div class="nav nav-tabs" id="tabs" role="tablist"></div>
+        <div class="d-flex bd-highlight">
+            <div class="nav nav-tabs bd-highlight" id="tabs" role="tablist"></div>
+            <div class="ms-auto bd-highlight">
+                <button class="btn btn-danger pull-right" type="submit" onclick="newRow()">New Split</button>
+            </div>
+        </div>
     </nav>
 
-    <button class="button" onclick="newRow()">
-        New Row
-    </button>
-        <div class="table-responsive bg-white rounded shadow">
-            <table class="table table-hover table-fixed" id="table">
-                <thead>
-                <tr>
-                    <th id="corner" class="col-1">#</td>
-                    <th scope="col" class="sortme col-4">Name</th>
-                    <th scope="col" class="sortme col-2">Due Date</th>
-                    <th scope="col" class="sortme col-2">Price</th>
-                    <th scope="col" class="sortme col-2">Mates</th>
-                    <th scope="col" class="sortme col-1">Done</th>
+    <div class="table-responsive bg-white rounded shadow">
+        <table class="table table-hover table-fixed" id="table">
+            <thead>
+            <tr>
+                <th id="corner" class="col-1">#</td>
+                <th scope="col" class="sortme col-4">Name</th>
+                <th scope="col" class="sortme col-2">Due Date</th>
+                <th scope="col" class="sortme col-2">Price</th>
+                <th scope="col" class="sortme col-2">Mates</th>
+                <th scope="col" class="sortme col-1">Done</th>
+            </tr>
+            </thead>
+            <tbody>
+                <tr class="sortme">
+                    <th scope="row" class="col-1 r">Row I</th>
+                    <td class="col-4">Closed</td>
+                    <td class="col-2">Open</td>
+                    <td class="col-2">Open</td>
+                    <td class="col-2">Open</td>
+                    <td class="col-1">Open</td>
                 </tr>
-                </thead>
-                <tbody>
-                    <tr class="sortme">
-                        <th scope="row" class="col-1 r">Row I</th>
-                        <td class="col-4">Closed</td>
-                        <td class="col-2">Open</td>
-                        <td class="col-2">Open</td>
-                        <td class="col-2">Open</td>
-                        <td class="col-1">Open</td>
-                    </tr>
-                    <tr class="sortme">
-                        <th scope="row" class="col-1 r">Row II</th>
-                        <td class="col-4">Open</td>
-                        <td class="col-2">Closed</td>
-                        <td class="col-2">Open</td>
-                        <td class="col-2">Open</td>
-                        <td class="col-1">Open</td>
-                    </tr>
-                    <tr class="sortme">
-                        <th scope="row" class="col-1 r">Row III</th>
-                        <td class="col-4">Open</td>
-                        <td class="col-2">Open</td>
-                        <td class="col-2">Closed</td>
-                        <td class="col-2">Closed</td>
-                        <td class="col-1">Closed</td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
+                <tr class="sortme">
+                    <th scope="row" class="col-1 r">Row II</th>
+                    <td class="col-4">Open</td>
+                    <td class="col-2">Closed</td>
+                    <td class="col-2">Open</td>
+                    <td class="col-2">Open</td>
+                    <td class="col-1">Open</td>
+                </tr>
+                <tr class="sortme">
+                    <th scope="row" class="col-1 r">Row III</th>
+                    <td class="col-4">Open</td>
+                    <td class="col-2">Open</td>
+                    <td class="col-2">Closed</td>
+                    <td class="col-2">Closed</td>
+                    <td class="col-1">Closed</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
     
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-A3rJD856KowSb7dwlZdYEkO39Gagi7vIsF0jrRAoQmDKKtQBHUuLZ9AsSv4jD4Xa" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>

@@ -38,7 +38,6 @@ $(function() {
     $(".table > tbody").sortable({
         start: function(event, ui) {
             clone = $(ui.item[0].outerHTML).clone();
-            console.log(clone);
         },
         placeholder: {
             element: function(clone, ui) {
