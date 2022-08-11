@@ -1,15 +1,3 @@
 body{
     overflow: hidden;
 }
-
-input{
-    border: 2px solid currentColor;
-}
-
-input:not(:focus):not(:placeholder-shown):invalid{
-    border: 2px dashed red;
-}
-
-input:not(:focus):not(:placeholder-shown):valid{
-    border: 2px solid green;
-}

@@ -1,4 +1,6 @@
 from dis import dis
+import email
+from operator import is_
 from flask import Flask, render_template, jsonify, request, redirect
 import firebase_admin
 from firebase_admin import credentials
@@ -20,7 +22,6 @@ firebase_admin.initialize_app(cred, {
 #Reference to the database
 ref = db.reference('/') 
 userId = '1'
-validCheck = True
 
 @app.route('/')
 def landpage():
@@ -28,17 +29,21 @@ def landpage():
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
+    msg=""
     if request.method == 'POST':
         email = request.form['emailLogin'].lower()
         password = request.form['passwordLogin']
         is_valid = validate_password(email, password)
-        if is_valid:
+        if is_valid:    
             return redirect("/index")
+        else:
+            msg = "Incorrect email or password."
+            return render_template("login.html", error=msg)
     return render_template("login.html")
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
-    global userId, validCheck
+    global userId
     if request.method == 'POST':
         displayName = request.form['displayName']
         email = request.form['emailRegister'].lower()
@@ -48,7 +53,6 @@ def register():
            
         if (displayName and email and password and passwordCheck):
             if password == passwordCheck:
-                validCheck = True
                 new_user: UserRecord = create_user(userId, displayName, email, password)
                 userId = str(int(userId) + 1)
                 return redirect('/login')
@@ -60,6 +64,14 @@ def index():
 
 def create_user(userId: str, displayName: str, email: str, password: str) -> UserRecord:
     return auth.create_user(uid=userId, display_name=displayName, email=email, password=password)
+
+def check_email(email):
+    for user in auth.list_users().iterate_all():
+        if user.email == email:
+            return True
+        else:
+            return False
+
 
 def validate_password(email, password):
     hash = open('hash-key.json')

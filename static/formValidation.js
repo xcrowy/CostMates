@@ -9,3 +9,4 @@ function confirm_password(){
         confirmPass.setCustomValidity('Password does not match. Please try again.');
     }
 }
+
