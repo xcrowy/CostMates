@@ -1,4 +1,5 @@
-from flask import Flask, render_template, jsonify, request, redirect
+from datetime import timedelta
+from flask import Flask, render_template, jsonify, request, redirect, session
 import firebase_admin
 from firebase_admin import credentials
 from firebase_admin import db
@@ -9,6 +10,8 @@ import json
 
 
 app = Flask(__name__)
+app.secret_key = 'yumcha'
+app.permanent_session_lifetime = timedelta(days=60)
 
 #Firebase Setup
 cred = credentials.Certificate("firebase-key.json")
@@ -28,15 +31,20 @@ def landpage():
 def login():
     msg=""
     if request.method == 'POST':
+        session.permanent = True
         email = request.form['emailLogin'].lower()
         password = request.form['passwordLogin']
+        session['email'] = request.form['emailLogin'].lower()
         is_valid = validate_password(email, password)
         if is_valid:    
             return redirect("/index")
         else:
             msg = "Incorrect email or password."
             return render_template("login.html", error=msg)
-    return render_template("login.html")
+    else:
+        if "email" in session:
+            return redirect("/index")
+        return render_template("login.html")
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
@@ -57,11 +65,18 @@ def register():
 
 @app.route('/index')
 def index():
-    return render_template("index.html")
+    if "email" in session:
+        return render_template("index.html")
+    else:
+        return redirect("/login")
+
+@app.route('/logout')
+def logout():
+    session.pop("email", None)
+    return redirect("/login")
 
 def create_user(userId: str, displayName: str, email: str, password: str) -> UserRecord:
     return auth.create_user(uid=userId, display_name=displayName, email=email, password=password)
-
 
 def validate_password(email, password):
     hash = open('hash-key.json')
