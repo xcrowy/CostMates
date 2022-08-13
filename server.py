@@ -7,7 +7,7 @@ from firebase_admin import auth
 from firebase_admin.auth import UserRecord
 import firebasescrypt
 import json
-
+from uuid6 import uuid6
 
 app = Flask(__name__)
 app.secret_key = 'yumcha'
@@ -21,7 +21,6 @@ firebase_admin.initialize_app(cred, {
 
 #Reference to the database
 ref = db.reference('/') 
-userId = '1'
 
 @app.route('/')
 def landpage():
@@ -34,9 +33,9 @@ def login():
         session.permanent = True
         email = request.form['emailLogin'].lower()
         password = request.form['passwordLogin']
-        session['email'] = request.form['emailLogin'].lower()
         is_valid = validate_password(email, password)
-        if is_valid:    
+        if is_valid:
+            session['email'] = request.form['emailLogin'].lower()
             return redirect("/index")
         else:
             msg = "Incorrect email or password."
@@ -48,18 +47,16 @@ def login():
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
-    global userId
     if request.method == 'POST':
         displayName = request.form['displayName']
         email = request.form['emailRegister'].lower()
         password = request.form['passwordRegister']
         passwordCheck = request.form['passwordCheck']
         print("Name: " + displayName + "\nEmail: " + email + "\nPassword: " + password + "\npasswordCheck: " + passwordCheck)
-           
         if (displayName and email and password and passwordCheck):
             if password == passwordCheck:
+                userId = str(uuid6())
                 new_user: UserRecord = create_user(userId, displayName, email, password)
-                userId = str(int(userId) + 1)
                 return redirect('/login')
     return render_template("register.html")
 
