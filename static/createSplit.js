@@ -1,3 +1,10 @@
+var mates = ["erica", "sharon", "jacky"];
+var email = ["erica@gmail.com", "sharon@gmail.com", "jacky@gmail.com"];
+
+function getName(email){
+    return email.split('@')[0];
+}
+
 function newSplit(){
     createNewSplitTab();
     unselectTabs();
@@ -46,6 +53,73 @@ function addItem() {
             .append($('<th>').attr('scope', 'row').attr('class','r').text(i))
             .append($('<td>').append("<div>").attr('contenteditable','true'))
             .append($('<td>').append("<div>").attr('contenteditable','true'))
-            .append($('<td>').append("<div>").attr('contenteditable','true'))
+            .append($('<td>').append($("<select>").attr('id','mates').attr('multiple','').attr('class','select').attr('name','multicheckbox[]')))
         );
+        populateDropdown()
+
+    
 }
+
+function populateDropdown(){
+    let dropdowns = document.getElementsByClassName("select");
+    console.log(dropdowns.length)
+    for(let i = 0; i<dropdowns.length; i++){
+      
+        for(let j=0; j<mates.length; j++){
+            let o = document.createElement("option");
+            o.setAttribute("value", j);
+            o.text = mates[j];
+            dropdowns[i].appendChild(o);
+        }
+    }
+    // dropDown();
+}
+
+
+// function dropDown(){
+//     $('select[multiple]').multiSelect({
+//         placeholder: 'Select Languages',
+//         search: true
+//     });
+// }
+
+function showCurrentMates(){
+    let l = document.getElementById("currentMateList");
+    $('#currentMateList').empty();
+    for(let i=0; i<mates.length; i++){
+        $('#currentMateList').append($('<tr>')
+        .append($('<td>').attr('class','name').text(mates[i]))
+        .append($('<td>').attr('class','email').text(email[i]))
+        .append($('<td>').append($("<button>").attr('type','button').attr('class','btn btn-danger btn-sm btnRemoveMate').text('x')))
+    );
+    }
+    console.log(mates);
+}
+
+function saveMates(){
+    let l = document.getElementById("currentMateList");
+    newMates =[];
+    newEmail =[];
+    for(let i=0; i<l.children.length; i++){
+        let row = l.children[i];
+        newMates.push(row.querySelector('.name').textContent);
+        newEmail.push(row.querySelector('.email').textContent);
+    }
+    mates = newMates;
+    email = newEmail;
+    
+}
+
+function addMates(){
+    let e = document.getElementById('newMateEmail');
+    $('#currentMateList').append($('<tr>')
+        .append($('<td>').attr('class','name').text(getName(e.value)))
+        .append($('<td>').attr('class','email').text(e.value))
+        .append($('<td>').append($("<button>").attr('type','button').attr('class','btn btn-danger btn-sm btnRemoveMate').text('x'))));
+    e.value = '';
+}
+
+$("#currentMateList").on('click', '.btnRemoveMate', function () {
+    $(this).closest('tr').remove();
+});
+
