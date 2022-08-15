@@ -24,7 +24,7 @@
 
     <div>
         <div id="form">
-            <form class="needs-validation py-4" 
+            <form action='/register' method='post' class="needs-validation py-4" 
                 oninput='pass2.setCustomValidity(pass2.value != pass1.value ? false : ""); 
                     pass1.setCustomValidity(pass1.value.length < 7 ? false : "");
                     user1.setCustomValidity(user1.value.length < 2 ? false : "");'
@@ -34,7 +34,7 @@
                     <div class="col-lg-4 col-md-3 col-sm-3 col-4 text-end">
                         <label for="email1" class="col-form-label">Email</label>
                     </div>
-                    <input type="email" id="email1" class="col-lg-4 col-md-5 col-sm-5 col-8 form-control" required pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$">
+                    <input type="email" id="email1" name="emailRegister" class="col-lg-4 col-md-5 col-sm-5 col-8 form-control" required pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$">
                     <div class="invalid-feedback col-lg-4 col-md-4 col-sm-4 col-8 ms-auto">
                             Please enter your email.
                     </div>
@@ -44,7 +44,7 @@
                     <div class="col-lg-4 col-md-3 col-sm-3 col-4 text-end">
                         <label for="user1" class="col-form-label">Display Name</label>
                     </div>
-                    <input type="text" id="user1" class="col-lg-4 col-md-5 col-sm-5 col-8 form-control" required>
+                    <input type="text" id="user1" name="displayName" class="col-lg-4 col-md-5 col-sm-5 col-8 form-control" required>
                     <div class="invalid-feedback col-lg-4 col-md-4 col-sm-4 col-8 ms-auto">
                             Please enter a display name.
                     </div>
@@ -54,7 +54,7 @@
                 <div class="col-lg-4 col-md-3 col-sm-3 col-4 text-end">
                     <label for="pass1" class="col-form-label">Password</label>
                 </div>
-                    <input type="password" id="pass1" class="col-lg-4 col-md-5 col-sm-5 col-8 form-control" required>
+                    <input type="password" id="pass1" name="passwordRegister" class="col-lg-4 col-md-5 col-sm-5 col-8 form-control" required>
                     <div class="invalid-feedback col-lg-4 col-md-4 col-sm-4 col-8 ms-auto">
                         Please enter a password.
                     </div>
@@ -64,7 +64,7 @@
                 <div class="col-lg-4 col-md-3 col-sm-3 col-4 text-end">
                     <label for="pass2" class="col-form-label">Confirm Password</label>
                 </div>
-                    <input type="password" id="pass2" class="col-lg-4 col-md-5 col-sm-5 col-8 form-control" required>
+                    <input type="password" id="pass2" name="passwordCheck" class="col-lg-4 col-md-5 col-sm-5 col-8 form-control" required>
                     <div class="invalid-feedback col-lg-4 col-md-4 col-sm-4 col-8 ms-auto">
                         Please confirm your password.
                     </div>
