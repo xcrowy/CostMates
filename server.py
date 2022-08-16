@@ -20,7 +20,7 @@ firebase_admin.initialize_app(cred, {
 })
 
 #Reference to the database
-ref = db.reference('/') 
+ref = db.reference('/')
 
 @app.route('/')
 def landpage():
@@ -71,6 +71,15 @@ def index():
 def logout():
     session.pop("email", None)
     return redirect("/login")
+
+@app.route('/api/post')
+def postSplit():
+    pass
+
+
+
+
+
 
 def create_user(userId: str, displayName: str, email: str, password: str) -> UserRecord:
     return auth.create_user(uid=userId, display_name=displayName, email=email, password=password)
