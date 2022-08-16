@@ -61,8 +61,8 @@ function addItem() {
     $("#splitForm").find('tbody')
         .append($('<tr>').attr('class','sortme')
             .append($('<th>').attr('scope', 'row').attr('class','r').text(i))
-            .append($('<td>').append("<div>").attr('contenteditable','true'))
-            .append($('<td>').append("<div>").attr('contenteditable','true'))
+            .append($('<td>').append("<div>").attr('contenteditable','true').attr('name', 'items').attr('onfocusout', 'postData()'))
+            .append($('<td>').append("<div>").attr('contenteditable','true').attr('name', 'costs').attr('onfocusout', 'postData()'))
             .append($('<td>').append($("<select>").attr('id','mateDropDown').attr('class','selectpicker').attr('data-container','body').prop('multiple',true)))
         );
     $("#outside").append($("<select>").attr('id','mateDropDown').attr('class','selectpicker').prop('multiple',true))

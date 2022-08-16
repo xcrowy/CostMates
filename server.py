@@ -1,5 +1,5 @@
 from datetime import timedelta
-from flask import Flask, render_template, jsonify, request, redirect, session
+from flask import Flask, render_template, jsonify, request, redirect, session, Response
 import firebase_admin
 from firebase_admin import credentials
 from firebase_admin import db
@@ -72,9 +72,15 @@ def logout():
     session.pop("email", None)
     return redirect("/login")
 
-@app.route('/api/post')
-def postSplit():
-    pass
+@app.route('/api/post', methods=['POST'])
+def createSplitDatabase():
+    itemName = request.form['items']
+    itemCost = request.form['costs']
+    print(itemName + " " + itemCost)
+
+    
+
+    return Response(status=200)
 
 
 
