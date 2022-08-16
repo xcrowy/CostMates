@@ -1,12 +1,18 @@
-function confirm_password(){
-    let inputPass = document.querySelector('input[name=passwordRegister');
-    let confirmPass = document.querySelector('input[name=passwordCheck');
-
-    if(inputPass.value === confirmPass.value){
-        confirmPass.setCustomValidity('');
-    }
-    else{
-        confirmPass.setCustomValidity('Password does not match. Please try again.');
-    }
-}
-
+(() => {
+    'use strict'
+  
+    // Fetch all the forms we want to apply custom Bootstrap validation styles to
+    const forms = document.querySelectorAll('.needs-validation')
+  
+    // Loop over them and prevent submission
+    Array.from(forms).forEach(form => {
+      form.addEventListener('submit', event => {
+        if (!form.checkValidity()) {
+          event.preventDefault()
+          event.stopPropagation()
+        }
+  
+        form.classList.add('was-validated')
+      }, false)
+    })
+  })()
