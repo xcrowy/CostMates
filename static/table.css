@@ -1,0 +1,35 @@
+.table-fixed tbody td,
+.table-fixed tbody th,
+.table-fixed thead > tr > th {
+    padding: 0.5rem;
+    float: left;
+    width: 100%;
+    height: 45px;
+    position: relative;
+    display: table-cell;
+    white-space: nowrap;
+    overflow: hidden;
+    table-layout: fixed;
+}
+
+.table-fixed tbody td{
+    overflow-x: scroll;
+    white-space: nowrap;
+}
+
+.table-hover tbody tr:hover td, .table-hover tbody tr:hover th {
+    background-color: #ffffff;
+}
+
+.table-fixed tbody td button{
+    font-size: .6rem;
+}
+
+body {
+    background: #94ebdb;
+    background: -webkit-linear-gradient(to bottom, #93ebdb, #ffffbc);
+    background: linear-gradient(to bottom, #93ebdb, #ffffbc);
+    min-height: 100vh;
+    padding: 20px;
+
+}
