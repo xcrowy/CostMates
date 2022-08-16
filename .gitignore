@@ -6,6 +6,8 @@
 **/node_modules/*
 **/.firebaserc
 firebase-key.json
+firebasescrypt.py
+hash-key.json
 
 ### Firebase Patch ###
 .runtimeconfig.json

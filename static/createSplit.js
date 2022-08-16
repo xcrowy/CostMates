@@ -8,8 +8,9 @@ function getName(email){
 function newSplit(){
     createNewSplitTab();
     unselectTabs();
-    showNewTab();
+    showTab("newSplitTab","nav-newSplit");
 }
+
 
 function createNewSplitTab(){
     let newSplitTab = document.createElement("a");
@@ -23,6 +24,10 @@ function createNewSplitTab(){
     newSplitTab.textContent = "Creating New Split";
 
     document.getElementById("tabs").appendChild(newSplitTab);
+
+
+    let newSplitButton = document.getElementById("newSplitButton");
+    newSplitButton.setAttribute("hidden","");
 }
 
 function unselectTabs(){
@@ -35,15 +40,20 @@ function unselectTabs(){
     }
 }
 
-function showNewTab(){
-    let newSplitTab = document.getElementById("newSplitTab");
-    let newSplitContent = document.getElementById("nav-newSplit");
+function showTab(tab, content){
+    let newSplitTab = document.getElementById(tab);
+    let newSplitContent = document.getElementById(content);
     newSplitTab.setAttribute("aria-selected", "true");
     newSplitTab.classList.add("active");
 
     newSplitContent.classList.add("active");
     newSplitContent.classList.add("show");
-    
+}
+
+function testDrop(){
+    $("#outside").append($("<select>").attr('id','mateDropDown').attr('class','selectpicker').prop('multiple',true))
+
+        populateDropdown();
 }
 
 function addItem() {
@@ -53,16 +63,15 @@ function addItem() {
             .append($('<th>').attr('scope', 'row').attr('class','r').text(i))
             .append($('<td>').append("<div>").attr('contenteditable','true'))
             .append($('<td>').append("<div>").attr('contenteditable','true'))
-            .append($('<td>').append($("<select>").attr('id','mates').attr('multiple','').attr('class','select').attr('name','multicheckbox[]')))
+            .append($('<td>').append($("<select>").attr('id','mateDropDown').attr('class','selectpicker').attr('data-container','body').prop('multiple',true)))
         );
-        populateDropdown()
+    $("#outside").append($("<select>").attr('id','mateDropDown').attr('class','selectpicker').prop('multiple',true))
 
-    
+        populateDropdown();
 }
 
 function populateDropdown(){
-    let dropdowns = document.getElementsByClassName("select");
-    console.log(dropdowns.length)
+    let dropdowns = document.getElementsByClassName("selectpicker");
     for(let i = 0; i<dropdowns.length; i++){
       
         for(let j=0; j<mates.length; j++){
@@ -72,16 +81,9 @@ function populateDropdown(){
             dropdowns[i].appendChild(o);
         }
     }
-    // dropDown();
+    $('select').selectpicker()
+
 }
-
-
-// function dropDown(){
-//     $('select[multiple]').multiSelect({
-//         placeholder: 'Select Languages',
-//         search: true
-//     });
-// }
 
 function showCurrentMates(){
     let l = document.getElementById("currentMateList");
@@ -107,7 +109,6 @@ function saveMates(){
     }
     mates = newMates;
     email = newEmail;
-    
 }
 
 function addMates(){
@@ -122,4 +123,26 @@ function addMates(){
 $("#currentMateList").on('click', '.btnRemoveMate', function () {
     $(this).closest('tr').remove();
 });
+
+function discardChanges(){
+    let newSplitButton = document.getElementById("newSplitButton");
+    newSplitButton.removeAttribute("hidden");
+
+    unselectTabs();
+    showTab("homeTab", "nav-home");
+    hideTab("newSplitTab");
+}
+
+function hideTab(tab){
+    document.getElementById(tab).remove();
+}
+
+function saveAndCalculate(){
+    $("#summary").empty();
+    $("#summary").append($('<thead>')
+        .append($('<tr>')
+            .append($('<th>').text('Mate')).append($('<th>').text('Cost')))).append($('<tbody>'));
+}
+
+
 

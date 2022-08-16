@@ -6,8 +6,12 @@
     <title>Title</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-gH2yIJqKdNHPEq0n4Mqa/HGKIhSkIHeL5AyhkYV8i59U5AR6csBvApHHNl/vI1Bx" crossorigin="anonymous">
     <link rel="stylesheet" href="//code.jquery.com/ui/1.13.0/themes/base/jquery-ui.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.14.0-beta2/css/bootstrap-select.min.css" integrity="sha512-mR/b5Y7FRsKqrYZou7uysnOdCIJib/7r5QeJMFvLNHNhtye3xJp1TdJVPLtetkukFn227nKpXD9OjUc09lx97Q==" crossorigin="anonymous"
+    referrerpolicy="no-referrer" />
     <script src="https://code.jquery.com/jquery-3.6.0.js"></script>
-    <script src="https://code.jquery.com/ui/1.13.0/jquery-ui.js"></script>
+    <script src="https://code.jquery.com/ui/1.13.0/jquery-ui.js"></script>    
+    
+    
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.9.1/font/bootstrap-icons.css">
  
 <body>
@@ -20,10 +24,11 @@
     <button class="button" onclick="newRow()">
         New Row
     </button>
-
-    <button class="button" onclick="newSplit()">
+    <button class="button" id="newSplitButton" onclick="newSplit()">
         New Split
     </button>
+
+    
     <!--
     place holder table
     test row and column dragging
@@ -85,9 +90,20 @@
                     </tbody>
                 </table>
             </div>
+            <div class="table-responsive">
+                <table class="table mytable table-bordered" id="summary" display="none">
+                    
+                </table>
+            </div>
+            <div id="splitButtons" style="position: fixed; bottom: 0px;">
+                <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#confirmationModal" >Cancel</button>
+                <button type="button" class="btn btn-success" onclick="saveAndCalculate()" >Save & Calculate</button>
+                <button type="button" class="btn btn-success" onclick="close()" >Close</button>
+
+            </div>
             <div class="modal fade" id="editMateListModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
                 <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
-                    <div class="modal-content">
+                    <div class="modal-content" style="min-width: 500px;">
                         <div class="modal-header border-bottom-0">
                             <h4 class="modal-title" id="myModalLabel">
                                 Your mates
@@ -97,7 +113,7 @@
                             </button>
                         </div>
                           <!--Body-->
-                        <div class="modal-body">
+                        <div class="modal-body px-md-5">
                             <table class="table table-image">
                             <thead>
                                 <tr>
@@ -113,8 +129,8 @@
                         </div>
                       
                             
-                        <div class="input-group mb-3">
-                            <input type="text" class="form-control" id="newMateEmail" placeholder="Email" aria-label="Email" aria-describedby="basic-addon2">
+                        <div class="input-group px-md-5">
+                            <input type="text" class="form-control" id="newMateEmail" placeholder="Email" aria-label="Email" aria-describedby="basic-addon2" type="email" required>
                             <div class="input-group-append">
                                 <button class="btn btn-outline-secondary" type="button" onclick="addMates()"><i class="bi bi-person-plus-fill"></i></button>
                             </div>
@@ -128,10 +144,37 @@
                     </div>
                 </div>
             </div>
+            <div class="modal fade" id="confirmationModal" tabindex="-1" role="dialog" aria-labelledby="confirmationModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+                    <div class="modal-content" style="min-width: 500px;">
+                        <div class="modal-header border-bottom-0">
+                            <h4 class="modal-title" id="confirmationModalLabel">
+                                You have unsaved changes.
+                            </h4>
+                            <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                              <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                          <!--Body-->
+                        <div class="modal-body px-md-5">
+                            Are you sure you want to continue?
+                        </div>
+
+                     
+                        <div class="modal-footer border-top-0 d-flex justify-content-between">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" onclick="discardChanges()">Yes, discard changes</button>
+                            <button type="button" class="btn btn-success" data-bs-dismiss="modal" onclick="continueEditing()">No, continue editing</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
     
     
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-A3rJD856KowSb7dwlZdYEkO39Gagi7vIsF0jrRAoQmDKKtQBHUuLZ9AsSv4jD4Xa" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.14.0-beta2/js/bootstrap-select.min.js" integrity="sha512-FHZVRMUW9FsXobt+ONiix6Z0tIkxvQfxtCSirkKc5Sb4TKHmqq1dZa8DphF0XqKb3ldLu/wgMa8mT6uXiLlRlw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
     <script src="../static/createTabs.js"></script>
     <script src="../static/dragdropRowCol.js"></script>
     <script src="../static/createSplit.js"></script>
