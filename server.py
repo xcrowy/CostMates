@@ -67,6 +67,10 @@ def index():
     else:
         return redirect("/login")
 
+@app.route('/contact_us')
+def contact_us():
+    return render_template("contact_us.html")
+
 @app.route('/logout')
 def logout():
     session.pop("email", None)
