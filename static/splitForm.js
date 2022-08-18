@@ -25,15 +25,13 @@ function postData(){
 
 function updateHeaders(){
     let position = {}
-    let totalRows = document.getElementById("splitForm").rows.length;
-    for(let x=0; x < totalRows; x++){
-        position = {
-            0: document.getElementsByTagName("table")[0].rows[x].cells[1].textContent,
-            1: document.getElementsByTagName("table")[0].rows[x].cells[2].textContent,
-            2: document.getElementsByTagName("table")[0].rows[x].cells[3].textContent,
-            3: document.getElementsByTagName("table")[0].rows[x].cells[4].textContent,
-            4: document.getElementsByTagName("table")[0].rows[x].cells[5].textContent,
-        }
+
+    position = {
+        0: document.getElementsByTagName("table")[0].rows[0].cells[1].textContent,
+        1: document.getElementsByTagName("table")[0].rows[0].cells[2].textContent,
+        2: document.getElementsByTagName("table")[0].rows[0].cells[3].textContent,
+        3: document.getElementsByTagName("table")[0].rows[0].cells[4].textContent,
+        4: document.getElementsByTagName("table")[0].rows[0].cells[5].textContent,
     }
     $.post("/api/updateHeaders", position);
     

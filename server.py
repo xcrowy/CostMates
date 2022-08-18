@@ -1,5 +1,5 @@
 from datetime import timedelta
-from itertools import count
+from turtle import pos, update
 from flask import Flask, render_template, jsonify, request, redirect, session, Response
 import firebase_admin
 from firebase_admin import credentials
@@ -80,6 +80,7 @@ def logout():
 def createSplitDatabase():
     summary = {}
     uid = str(uuid.uuid4())
+    updateUserSplitId(uid)
     splitRef = db.reference('/Splits/splitId_' + uid + "/Items")
     summaryRef = db.reference('/Splits/splitId_' + uid)
     for i in range(1, int(len(request.form) / 3) + 1):
@@ -106,33 +107,58 @@ def createSplitDatabase():
         }
         splitRef.push().set(itemData)
     summaryRef.push().set(summary)
-
-    # GET
-    # getRef = db.reference('/Splits/splitId_' + str(splitId))
-    # getSplit = getRef.get()
-    # for key, value in getSplit.items():
-    #     print(value)
-    
     return Response(status=200)
 
 @app.route('/api/updateHeaders', methods=['POST'])
-def createUserDatabase(email, uid):
-    # user = auth.get_user_by_email(email)
-    # userRef = db.reference('/Users')
-    # data = {
-    #     uid: {
-    #         "displayName": user.display_name,
-    #         "email": user.email,
-    #         "order": {
-                
-    #         },
-    #         "splits": {
-    #             "id": '0'
-    #         }
-    #     }
-    # }
-    pass
+def getUserTablePref():
+    position = {}
+    for i in range(0, int(len(request.form))):
+        pos = request.form[str(i)]
+        position[i] = pos
+    updateUserHeaderPref(position)
+    return Response(status=200)
 
+def createUserDatabase(email, userId):
+    user = auth.get_user_by_email(email)
+    uid = userId
+    userRef = db.reference('/Users')
+    data = {
+        uid: {
+            "displayName": user.display_name,
+            "email": user.email,
+            "order": {
+                0: ""
+            },
+            "splits": {
+                "id": '0'
+            }
+        }
+    }
+    userRef.push().set(data)
+
+def updateUserHeaderPref(position):
+    ref = db.reference('/Users')
+    getUser = ref.get()
+    user = auth.get_user_by_email(session['email'])
+    uid = user.uid
+    for key, value in getUser.items():
+        dataRef = db.reference('/Users/' + key)
+        getData = dataRef.get()
+        for k, v in getData.items():
+            if k == uid:
+                dataRef.child(k).update({"order": position})
+
+def updateUserSplitId(splitId):
+    ref = db.reference('/Users')
+    getUser = ref.get()
+    user = auth.get_user_by_email(session['email'])
+    uid = user.uid
+    for key, value in getUser.items():
+        dataRef = db.reference('/Users/' + key)
+        getData = dataRef.get()
+        for k, v in getData.items():
+            if k == uid:
+                dataRef.child(k).update({"splits": splitId})
 
 def create_user(userId: str, displayName: str, email: str, password: str) -> UserRecord:
     return auth.create_user(uid=userId, display_name=displayName, email=email, password=password)
