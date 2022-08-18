@@ -27,12 +27,14 @@ function updateHeaders(){
     let position = {}
     let totalRows = document.getElementById("splitForm").rows.length;
     for(let x=0; x < totalRows; x++){
-        for(let y=1; y < 6; y++){
-            headers = document.getElementsByTagName("table")[0].rows[x].cells[y].textContent;
-            position[x] = {
-                
-            }
+        position = {
+            0: document.getElementsByTagName("table")[0].rows[x].cells[1].textContent,
+            1: document.getElementsByTagName("table")[0].rows[x].cells[2].textContent,
+            2: document.getElementsByTagName("table")[0].rows[x].cells[3].textContent,
+            3: document.getElementsByTagName("table")[0].rows[x].cells[4].textContent,
+            4: document.getElementsByTagName("table")[0].rows[x].cells[5].textContent,
         }
     }
+    $.post("/api/updateHeaders", position);
     
 }
