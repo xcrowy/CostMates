@@ -1,6 +1,11 @@
 var mates = ["erica", "sharon", "jacky"];
 var email = ["erica@gmail.com", "sharon@gmail.com", "jacky@gmail.com"];
 
+var itemIndex = document.getElementsByName("items").length;
+var costIndex = document.getElementsByName("costs").length;
+var item = "";
+var cost = "";
+
 function getName(email){
     return email.split('@')[0];
 }
@@ -61,13 +66,13 @@ function addItem() {
     $("#splitForm").find('tbody')
         .append($('<tr>').attr('class','sortme')
             .append($('<th>').attr('scope', 'row').attr('class','r').text(i))
-            .append($('<td>').append("<div>").attr('contenteditable','true').attr('name', 'items').attr('onfocusout', 'postData()'))
-            .append($('<td>').append("<div>").attr('contenteditable','true').attr('name', 'costs').attr('onfocusout', 'postData()'))
+            .append($('<td>').append("<div>").attr('contenteditable','true').attr('name', 'items'))
+            .append($('<td>').append("<div>").attr('contenteditable','true').attr('name', 'costs'))
             .append($('<td>').append($("<select>").attr('id','mateDropDown').attr('class','selectpicker').attr('data-container','body').prop('multiple',true)))
         );
     $("#outside").append($("<select>").attr('id','mateDropDown').attr('class','selectpicker').prop('multiple',true))
 
-        populateDropdown();
+    populateDropdown();
 }
 
 function populateDropdown(){
@@ -81,8 +86,7 @@ function populateDropdown(){
             dropdowns[i].appendChild(o);
         }
     }
-    $('select').selectpicker()
-
+    $('select').selectpicker();
 }
 
 function showCurrentMates(){
@@ -136,13 +140,5 @@ function discardChanges(){
 function hideTab(tab){
     document.getElementById(tab).remove();
 }
-
-function saveAndCalculate(){
-    $("#summary").empty();
-    $("#summary").append($('<thead>')
-        .append($('<tr>')
-            .append($('<th>').text('Mate')).append($('<th>').text('Cost')))).append($('<tbody>'));
-}
-
 
 

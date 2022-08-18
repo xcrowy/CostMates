@@ -1,4 +1,5 @@
 from datetime import timedelta
+from itertools import count
 from flask import Flask, render_template, jsonify, request, redirect, session, Response
 import firebase_admin
 from firebase_admin import credentials
@@ -8,6 +9,7 @@ from firebase_admin.auth import UserRecord
 import firebasescrypt
 import json
 from uuid6 import uuid6
+import uuid
 
 app = Flask(__name__)
 app.secret_key = 'yumcha'
@@ -18,9 +20,6 @@ cred = credentials.Certificate("firebase-key.json")
 firebase_admin.initialize_app(cred, {
     'databaseURL': 'https://cost-mates-default-rtdb.firebaseio.com'
 })
-
-#Reference to the database
-ref = db.reference('/')
 
 @app.route('/')
 def landpage():
@@ -57,6 +56,7 @@ def register():
             if password == passwordCheck:
                 userId = str(uuid6())
                 new_user: UserRecord = create_user(userId, displayName, email, password)
+                createUserDatabase(email, userId)
                 return redirect('/login')
     return render_template("register.html")
 
@@ -74,17 +74,60 @@ def logout():
 
 @app.route('/api/post', methods=['POST'])
 def createSplitDatabase():
-    itemName = request.form['items']
-    itemCost = request.form['costs']
-    print(itemName + " " + itemCost)
-
+    summary = {}
+    uid = str(uuid.uuid4())
+    splitRef = db.reference('/Splits/splitId_' + uid + "/Items")
+    summaryRef = db.reference('/Splits/splitId_' + uid)
+    for i in range(1, int(len(request.form) / 3) + 1):
+        itemName = request.form[str(i) + "[items]"]
+        itemCost = request.form[str(i) + "[costs]"]
+        mates = request.form[str(i) + "[mates]"]
+        mates = mates.split(',')
+        
+        for mate in mates:
+            mate = mate.strip()
+            split_cost = float(itemCost) / len(mates)
+            split_cost = round(split_cost, 2)
+            if mate in summary:
+                summary[mate] += split_cost
+            else:
+                summary[mate] = 0
+                summary[mate] += split_cost
     
+        itemData = {
+            itemName: {
+                "Users": mates,
+                "Total": float(itemCost)
+            }
+        }
+        splitRef.push().set(itemData)
+    summaryRef.push().set(summary)
 
+    # GET
+    # getRef = db.reference('/Splits/splitId_' + str(splitId))
+    # getSplit = getRef.get()
+    # for key, value in getSplit.items():
+    #     print(value)
+    
     return Response(status=200)
 
-
-
-
+@app.route('/api/updateHeaders', methods=['POST'])
+def createUserDatabase(email, uid):
+    # user = auth.get_user_by_email(email)
+    # userRef = db.reference('/Users')
+    # data = {
+    #     uid: {
+    #         "displayName": user.display_name,
+    #         "email": user.email,
+    #         "order": {
+                
+    #         },
+    #         "splits": {
+    #             "id": '0'
+    #         }
+    #     }
+    # }
+    pass
 
 
 def create_user(userId: str, displayName: str, email: str, password: str) -> UserRecord:
@@ -105,7 +148,6 @@ def validate_password(email, password):
                 mem_cost=data['mem_cost']
             )
             return is_valid
-
 
 if __name__ == "__main__":
     app.run(host='127.0.0.1', port=8080, debug=True)
