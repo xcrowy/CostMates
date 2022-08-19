@@ -3,20 +3,19 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Title</title>
+    <title>CostMates</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-gH2yIJqKdNHPEq0n4Mqa/HGKIhSkIHeL5AyhkYV8i59U5AR6csBvApHHNl/vI1Bx" crossorigin="anonymous">
     <link rel="stylesheet" href="//code.jquery.com/ui/1.13.0/themes/base/jquery-ui.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.14.0-beta2/css/bootstrap-select.min.css" integrity="sha512-mR/b5Y7FRsKqrYZou7uysnOdCIJib/7r5QeJMFvLNHNhtye3xJp1TdJVPLtetkukFn227nKpXD9OjUc09lx97Q==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-    <script src="https://code.jquery.com/jquery-3.6.0.js"></script>
-    <script src="https://code.jquery.com/ui/1.13.0/jquery-ui.js"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.9.1/font/bootstrap-icons.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
     <link rel="stylesheet" href="//code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
+    <link rel="stylesheet" href="../static/universal.css">
     <link rel="stylesheet" href="../static/table.css">
     <link rel="stylesheet" href="../static/menu.css">
 </head>
 
-    <nav class="navbar navbar-expand navbar-light py-0">
+    <nav class="navbar navbar-expand navbar-light">
         <div class="container">
             <a class="navbar-brand" href="./login">
                 <img src="../static/costmates_logo.png" height="40px" alt="">
@@ -25,12 +24,11 @@
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul class="navbar-nav ms-auto">
                     <li class="nav-item dropdown">
-                        <a class="nav-link data-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <a class="nav-link data-toggle p-0" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             <i class="bi bi-list" style="font-size: 2rem;"></i>
                         </a>
                         <div class="dropdown-menu dropdown-menu-end animate slideIn" aria-labelledby="navbarDropdown">
-                            <a class="dropdown-item" href="./contact">Contact Us</a>
-                            <a class="dropdown-item" href="#">Settings</a>
+                            <a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#contactModal">Contact Us</a>
                             <div class="dropdown-divider"></div>
                             <a class="dropdown-item" href="./logout">Log Out</a>
                         </div>
@@ -40,159 +38,255 @@
         </div>
     </nav>
 
-    <nav>
-        <div class="d-flex bd-highlight">
-            <div class="nav nav-tabs bd-highlight" id="tabs" role="tablist"></div>
-            <div class="ms-auto bd-highlight">
-                <button class="btn btn-danger pull-right" id="newSplitButton" type="submit" onclick="newSplit()">New Split</button>
+    <div class="p-3">
+        <nav>
+            <div class="d-flex bd-highlight">
+                <div class="nav nav-tabs bd-highlight" id="tabs" role="tablist"></div>
+                <div class="ms-auto bd-highlight">
+                    <button class="btn btn-danger pull-right" id="newSplitButton" type="submit" onclick="newSplit()">New Split</button>
+                </div>
             </div>
-        </div>
-    </nav>
+        </nav>
 
-    <button class="button" onclick="newRow()">
-        New Row
-    </button>
-
-
-    <div class="tab-content" id="myTabContent">
-        <div class="tab-pane fade show active" id="nav-home" role="tabpanel" aria-labelledby="home-tab">
-            <div class="table-responsive bg-white rounded shadow">
-                <table class="table table-hover table-fixed" id="table">
-                    <thead>
-                    <tr>
-                        <th id="corner" class="col-1">Created</td>
-                        <th scope="col" class="sortme col-4">Name</th>
-                        <th scope="col" class="sortme col-2">Due Date</th>
-                        <th scope="col" class="sortme col-2">Price</th>
-                        <th scope="col" class="sortme col-2">Mates</th>
-                        <th scope="col" class="sortme col-1">Archive</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                        <tr class="sortme">
-                            <th scope="row" class="col-1 r">Row I</th>
-                            <td class="col-4">Closed</td>
-                            <td class="col-2">Open</td>
-                            <td class="col-2">Open</td>
-                            <td class="col-2">Open</td>
-                            <td class="col-1 button"><button type="button" class="btn btn-outline-success btn-sm">Archive</button></td>
+        <div class="tab-content" id="myTabContent">
+            <div class="tab-pane fade show active" id="nav-home" role="tabpanel" aria-labelledby="home-tab">
+                <div class="table-responsive bg-white rounded shadow">
+                    <table class="table table-hover table-fixed table-custom" id="table">
+                        <thead>
+                        <tr>
+                            <th id="corner" class="col-1">Created</td>
+                            <th scope="col" class="sortme col-4">Name</th>
+                            <th scope="col" class="sortme col-2">Due Date</th>
+                            <th scope="col" class="sortme col-2">Price</th>
+                            <th scope="col" class="sortme col-2">Mates</th>
+                            <th scope="col" class="sortme col-1">Archive</th>
                         </tr>
-                        <tr class="sortme">
-                            <th scope="row" class="col-1 r">Row II</th>
-                            <td class="col-4">OpenOpenOpenOpenOpenOpenOpenOpenOpenOpenOpenOpenOpenOpenOpenOpenOpenOpenOpenOpen</td>
-                            <td class="col-2">Closed</td>
-                            <td class="col-2">Open</td>
-                            <td class="col-2">Open</td>
-                            <td class="col-1 button"><button type="button" class="btn btn-outline-success btn-sm">Archive</button></td>
-                        </tr>
-                        <tr class="sortme">
-                            <th scope="row" class="col-1 r">Row III</th>
-                            <td class="col-4">Open</td>
-                            <td class="col-2">Open</td>
-                            <td class="col-2">ClosedClosedClosedClosedClosed</td>
-                            <td class="col-2">Closed</td>
-                            <td class="col-1"><button type="button" class="btn btn-outline-success btn-sm">Archive</button></td>
-                        </tr>
-                    </tbody>
-                </table>
+                        </thead>
+                        <tbody>
+                            <tr class="sortme">
+                                <th scope="row" class="col-1 r">Row I</th>
+                                <td class="col-4">Closed</td>
+                                <td class="col-2">Open</td>
+                                <td class="col-2">Open</td>
+                                <td class="col-2">Open</td>
+                                <td class="col-1 button"><button type="button" class="btn btn-outline-success btn-sm">Archive</button></td>
+                            </tr>
+                            <tr class="sortme">
+                                <th scope="row" class="col-1 r">Row II</th>
+                                <td class="col-4">OpenOpenOpenOpenOpenOpenOpenOpenOpenOpenOpenOpenOpenOpenOpenOpenOpenOpenOpenOpen</td>
+                                <td class="col-2">Closed</td>
+                                <td class="col-2">Open</td>
+                                <td class="col-2">Open</td>
+                                <td class="col-1 button"><button type="button" class="btn btn-outline-success btn-sm">Archive</button></td>
+                            </tr>
+                            <tr class="sortme">
+                                <th scope="row" class="col-1 r">Row III</th>
+                                <td class="col-4">Open</td>
+                                <td class="col-2">Open</td>
+                                <td class="col-2">ClosedClosedClosedClosedClosed</td>
+                                <td class="col-2">Closed</td>
+                                <td class="col-1"><button type="button" class="btn btn-outline-success btn-sm">Archive</button></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
-        </div>
-        <div class="tab-pane fade" id="nav-archive" role="tabpanel" aria-labelledby="archive-tab"></div>
-        <div class="tab-pane fade" id="nav-newSplit" role="tabpanel" aria-labelledby="newSplit-tab">
-            <button class="button" onclick="addItem()">
-                Add Item
-            </button>
-            <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#editMateListModal" onclick="showCurrentMates()">
-                Edit Mates
-            </button>
-            <div class="table-responsive">
-                <table class="table mytable table-bordered" id="splitForm">
-                    <thead>
-                    <tr>
-                        <td id="corner"></td>
-                        <th scope="col" class="sortme">Item Name</th>
-                        <th scope="col" class="sortme">Cost</th>
-                        <th scope="col" class="sortme">Mates</th>
-                    </tr>
-                    </thead>
-                    <tbody>
 
-                    </tbody>
-                </table>
-            </div>
-            <div class="table-responsive">
-                <table class="table mytable table-bordered" id="summary" display="none">
-                    
-                </table>
-            </div>
-            <div id="splitButtons" style="position: fixed; bottom: 0px;">
-                <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#confirmationModal" >Cancel</button>
-                <button type="button" class="btn btn-success" onclick="saveAndCalculate()" >Save & Calculate</button>
-                <button type="button" class="btn btn-success" onclick="close()" >Close</button>
+            <div class="tab-pane fade" id="nav-archive" role="tabpanel" aria-labelledby="archive-tab"></div>
 
-            </div>
-            <div class="modal fade" id="editMateListModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
-                    <div class="modal-content" style="min-width: 500px;">
-                        <div class="modal-header border-bottom-0">
-                            <h4 class="modal-title" id="myModalLabel">
-                                Your mates
-                            </h4>
-                            <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-                              <span aria-hidden="true">&times;</span>
-                            </button>
-                        </div>
-                        <div class="modal-body px-md-5">
-                            <table class="table table-image">
-                            <thead>
-                                <tr>
-                                    <th>Display Name</th>
-                                    <th>Email</th>
-                                    <th>Remove</th>
-                                </tr>
-                            </thead>
-                            <tbody id="currentMateList">
-                               
-                            </tbody>
-                            </table>
-                        </div>
-                      
+            <div class="tab-pane fade" id="nav-newSplit" role="tabpanel" aria-labelledby="newSplit-tab">
+                <div class="d-grid gap-2 d-flex justify-content-end py-2">
+                    <button class="btn btn-success" onclick="addItem()">
+                        Add Item
+                    </button>
+                    <button type="button" class="btn btn-outline-success" data-bs-toggle="modal" data-bs-target="#editMateListModal" onclick="showCurrentMates()">
+                        Edit Mates
+                    </button>
+                </div>
+                <div class="table-responsive bg-white rounded shadow">
+                    <table class="table mytable table-bordered" id="splitForm">
+                        <thead>
+                        <tr>
+                            <td id="corner"></td>
+                            <th scope="col" class="sortme">Item Name</th>
+                            <th scope="col" class="sortme">Cost</th>
+                            <th scope="col" class="sortme">Mates</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="pt-3">
+                    <div class="table-responsive bg-white rounded shadow">
+                        <table class="table mytable table-bordered d-none" id="summary">
                             
-                        <div class="input-group px-md-5">
-                            <input type="text" class="form-control" id="newMateEmail" placeholder="Email" aria-label="Email" aria-describedby="basic-addon2" type="email" required>
-                            <div class="input-group-append">
-                                <button class="btn btn-outline-secondary" type="button" onclick="addMates()"><i class="bi bi-person-plus-fill"></i></button>
+                        </table>
+                    </div>
+                    
+                    <div class="d-grid gap-2 d-flex justify-content-end py-2" id="splitButtons">
+                        <button type="button" class="btn btn-success" onclick="saveAndCalculate()">Save & Calculate</button>
+                        <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#confirmationModal">Cancel</button>
+                        <button type="button" class="btn btn-success" onclick="close()">Close</button>
+                    </div>
+                </div>
+
+                <div class="modal fade" id="editMateListModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+                        <div class="modal-content" style="min-width: 500px;">
+                            <div class="modal-header border-bottom-0">
+                                <h4 class="modal-title" id="myModalLabel">
+                                    Your mates
+                                </h4>
+                                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body px-md-5">
+                                <table class="table table-image">
+                                <thead>
+                                    <tr>
+                                        <th>Display Name</th>
+                                        <th>Email</th>
+                                        <th>Remove</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="currentMateList">
+                                
+                                </tbody>
+                                </table>
+                            </div>
+                        
+
+                            <div class="input-group px-md-5">
+                                <input type="text" class="form-control" id="newMateEmail" placeholder="Email" aria-label="Email" aria-describedby="basic-addon2" type="email" required>
+                                <div class="input-group-append">
+                                    <button class="btn btn-outline-secondary" type="button" onclick="addMates()"><i class="bi bi-person-plus-fill"></i></button>
+                                </div>
+                            </div>
+                        
+                        
+                            <div class="modal-footer border-top-0 d-flex justify-content-between">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                <button type="button" class="btn btn-success" data-bs-dismiss="modal" onclick="saveMates()">Save</button>
                             </div>
                         </div>
-                       
-                     
-                        <div class="modal-footer border-top-0 d-flex justify-content-between">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                            <button type="button" class="btn btn-success" data-bs-dismiss="modal" onclick="saveMates()">Save</button>
+                    </div>
+                </div>
+                <div class="modal fade" id="confirmationModal" tabindex="-1" role="dialog" aria-labelledby="confirmationModalLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+                        <div class="modal-content" style="min-width: 500px;">
+                            <div class="modal-header border-bottom-0">
+                                <h4 class="modal-title" id="confirmationModalLabel">
+                                    You have unsaved changes.
+                                </h4>
+                                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body px-md-5">
+                                Are you sure you want to continue?
+                            </div>
+
+                            <div class="modal-footer border-top-0 d-flex justify-content-between">
+                                <button type="button" class="btn btn-success" data-bs-dismiss="modal" onclick="continueEditing()">No, continue editing</button>
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" onclick="discardChanges()">Yes, discard changes</button>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="modal fade" id="confirmationModal" tabindex="-1" role="dialog" aria-labelledby="confirmationModalLabel" aria-hidden="true">
-                <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
-                    <div class="modal-content" style="min-width: 500px;">
-                        <div class="modal-header border-bottom-0">
-                            <h4 class="modal-title" id="confirmationModalLabel">
-                                You have unsaved changes.
-                            </h4>
-                            <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-                              <span aria-hidden="true">&times;</span>
-                            </button>
-                        </div>
-                        <div class="modal-body px-md-5">
-                            Are you sure you want to continue?
-                        </div>
+        </div>
+    </div>
 
-                        <div class="modal-footer border-top-0 d-flex justify-content-between">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" onclick="discardChanges()">Yes, discard changes</button>
-                            <button type="button" class="btn btn-success" data-bs-dismiss="modal" onclick="continueEditing()">No, continue editing</button>
+        
+      
+    <div class="modal fade" id="contactModal" tabindex="-1" aria-labelledby="contactModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="contactModalLabel">Contact Us</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                    <div class="modal-body">
+                        <div class="container-fluid">
+                            <div class="align-self-center">
+                                <div class="px-5 py-3 bg-white rounded shadow">
+                                    <div class="col">
+                                        <h3>
+                                            Let us know!
+                                        </h3>
+                                        <p class="m-0">
+                                            Questions? Comments? Feedback? <br> 
+                                            Send us a message and someone will reach out within 24 hours!
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row mx-auto align-items-center">
+                                <div id="form">
+                                    <form action="javascript:submitContact()" class="needs-validation mt-4 pt-3" 
+                                        oninput='user1.setCustomValidity(user1.value.length < 2 ? false : "");'
+                                        id="contactForm"
+                                        novalidate>
+                                        
+                                        <div class="row container has-validation align-items-center mb-3 mx-auto">
+                                            <div class="col-3 text-end">
+                                                <label for="user1" class="col-form-label">Name</label>
+                                            </div>
+                                            <input type="text" id="user1" name="name" class="col-md-7 form-control" required>
+                                            <div class="invalid-feedback col-9 ms-auto">
+                                                    Please enter your name.
+                                            </div>
+                                        </div>
+                        
+                                        <div class="row container has-validation align-items-center mb-3 mx-auto">
+                                            <div class="col-3 text-end">
+                                                <label for="email1" class="col-form-label">Email</label>
+                                            </div>
+                                            <input type="email" id="email1" name="emailRegister" class="col-md-7 form-control" required pattern="[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,4}$">
+                                            <div class="invalid-feedback col-9 ms-auto">
+                                                    Please enter your email.
+                                            </div>
+                                        </div>
+                        
+                                        <div class="row container has-validation mb-3 mx-auto">
+                                            <div class="col-3 text-end">
+                                                <label for="user2" class="col-form-label">Message</label>
+                                            </div>
+                                            <textarea class="col-md-7 form-control" id="user2" rows="3" required></textarea>
+                                            <div class="invalid-feedback col-9 ms-auto">
+                                                    Please write your message.
+                                            </div>
+                                        </div>
+                        
+                                        <div class="col-lg-5 col-5 mb-3 justify-content-center mx-auto">
+                                            <button type="submit" class="btn btn-success btn-block">Send</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
                         </div>
                     </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="confirmModal" tabindex="-1" aria-labelledby="confirmModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Confirmation</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p>We've received your message and will get back to you soon!</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                 </div>
             </div>
         </div>
@@ -205,6 +299,8 @@
     <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-A3rJD856KowSb7dwlZdYEkO39Gagi7vIsF0jrRAoQmDKKtQBHUuLZ9AsSv4jD4Xa" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.14.0-beta2/js/bootstrap-select.min.js" integrity="sha512-FHZVRMUW9FsXobt+ONiix6Z0tIkxvQfxtCSirkKc5Sb4TKHmqq1dZa8DphF0XqKb3ldLu/wgMa8mT6uXiLlRlw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://code.jquery.com/ui/1.13.0/jquery-ui.js"></script>
+    <script src="../static/formValidation.js"></script>
     <script src="../static/createTabs.js"></script>
     <script src="../static/dragdropRowCol.js"></script>
     <script src="../static/createSplit.js"></script>

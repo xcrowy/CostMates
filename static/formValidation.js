@@ -16,3 +16,8 @@
       }, false)
     })
   })()
+
+function submitContact() {
+	$('#contactModal').modal('hide');
+	$('#confirmModal').modal('show');
+}

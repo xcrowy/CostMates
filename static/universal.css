@@ -1,8 +1,12 @@
 body{
     overflow: auto;
-    background: #c4f5ec;
-    background: -webkit-linear-gradient(to bottom, #c4f5ec, #fefec9);
-    background: linear-gradient(to bottom, #c4f5ec, #fefec9);
+    background: #94ebdb;
+    background: -webkit-linear-gradient(to bottom, #93ebdb, #ffffbc);
+    background: linear-gradient(to bottom, #93ebdb, #ffffbc);
     min-height: 100vh;
     padding: 20px;
+}
+
+.title {
+    margin-bottom: 3rem;
 }
