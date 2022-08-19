@@ -76,15 +76,23 @@ def logout():
 @app.route('/api/post', methods=['POST'])
 def createSplitDatabase():
     summary = {}
+    sharedMates = {}
     uid = str(uuid.uuid4())
     updateUserSplitId(uid)
-    splitRef = db.reference('/Splits/splitId_' + uid + "/Items")
-    summaryRef = db.reference('/Splits/splitId_' + uid)
+    summaryRef = db.reference('/Splits/splitId_' + uid + "/Mates")
+    sharedMatesRef = db.reference('/Splits/splitId_' + uid + "/SharedMates")
     for i in range(1, int(len(request.form) / 3) + 1):
         itemName = request.form[str(i) + "[items]"]
         itemCost = request.form[str(i) + "[costs]"]
         mates = request.form[str(i) + "[mates]"]
         mates = mates.split(',')
+
+        mateList = request.form[str(i) + "[mateList]"]
+        mateList = mateList.split(',')
+        for m in mateList:
+            m = m.strip()
+            if m not in sharedMates:
+                sharedMates[m] = True
         
         for mate in mates:
             mate = mate.strip()
@@ -97,13 +105,13 @@ def createSplitDatabase():
                 summary[mate] += split_cost
     
         itemData = {
-            itemName: {
-                "Users": mates,
-                "Total": float(itemCost)
-            }
+            "Users": mates,
+            "Total": float(itemCost)
         }
-        splitRef.push().set(itemData)
+        itemRef = db.reference('/Splits/splitId_' + uid + "/Items/" + itemName)
+        itemRef.push().set(itemData)
     summaryRef.push().set(summary)
+    sharedMatesRef.push().set(sharedMates)
     return Response(status=200)
 
 @app.route('/api/updateHeaders', methods=['POST'])
@@ -117,7 +125,8 @@ def getUserTablePref():
 
 @app.route('/api/splits', methods=['GET'])
 def getUserSplit():
-    userSplit = []
+    userSplit = {}
+    splitList = []
     ref = db.reference('/Users')
     getRef = ref.get()
     email = session['email']
@@ -133,11 +142,15 @@ def getUserSplit():
                     splitRef = db.reference('/Splits/splitId_' + x)
                     splitData = splitRef.get()
                     for val in splitData.values():
+                        print(val)
                         resp = {
-                            "splits": val,
-                            "length": len(getUserSplitId(userSplitsRef))
+                            "data": val
                         }
-                        userSplit.append(resp)
+                        splitList.append(resp)
+                userSplit = {
+                    "split": splitList,
+                    "length": len(getUserSplitId(userSplitsRef))
+                }
                 return jsonify(userSplit)
 
 

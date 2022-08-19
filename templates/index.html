@@ -57,11 +57,11 @@
                         <thead>
                         <tr>
                             <th id="corner" class="col-1">Created</td>
-                            <th scope="col" class="sortme col-4">Name</th>
-                            <th scope="col" class="sortme col-2">Due Date</th>
-                            <th scope="col" class="sortme col-2">Price</th>
-                            <th scope="col" class="sortme col-2">Mates</th>
-                            <th scope="col" class="sortme col-1">Archive</th>
+                                <th scope="col" class="sortme col-4" onmousemove="updateHeaders()">Name</th>
+                                <th scope="col" class="sortme col-2" onmousemove="updateHeaders()">Due Date</th>
+                                <th scope="col" class="sortme col-2" onmousemove="updateHeaders()">Price</th>
+                                <th scope="col" class="sortme col-2" onmousemove="updateHeaders()">Mates</th>
+                                <th scope="col" class="sortme col-1" onmousemove="updateHeaders()">Archive</th>
                         </tr>
                         </thead>
                         <tbody id="dataBody">
@@ -106,7 +106,7 @@
                     </div>
                     
                     <div class="d-grid gap-2 d-flex justify-content-end py-2" id="splitButtons">
-                        <button type="button" class="btn btn-success" onclick="saveAndCalculate()">Save & Calculate</button>
+                        <button type="submit" class="btn btn-success" onclick="postData()">Save & Calculate</button>
                         <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#confirmationModal">Cancel</button>
                         <button type="button" class="btn btn-success" onclick="close()">Close</button>
                     </div>
@@ -283,5 +283,6 @@
     <script src="../static/dragdropRowCol.js"></script>
     <script src="../static/createSplit.js"></script>
     <script src="../static/loadData.js"></script>
+    <script src="../static/splitForm.js"></script>
 </body>
 </html>

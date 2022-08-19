@@ -7,17 +7,29 @@ function postData(){
     let [item, cost, mates] = ["", "", ""];
 
     let totalRows = document.getElementById("splitForm").rows.length;
+    let mateList = document.getElementById("currentMateList");
+    let tempList = [];
+    let mateString = "";
+    if(mateList.rows.length != 0){
+        for(let x=0; x < mateList.rows.length; x++){
+            tempList.push(mateList.rows[x].childNodes[0].textContent)
+        }
+        mateString = tempList.join(", ");
+    }
+    else{
+        mateString = "None";
+    }
+
     let summary = {};
     for(let x=1; x < totalRows; x++){
         item = document.getElementsByTagName("table")[1].rows[x].cells[1].textContent;
         cost = document.getElementsByTagName("table")[1].rows[x].cells[2].textContent;
         mates = document.getElementsByTagName("table")[1].rows[x].cells[3].childNodes[0].childNodes[1].title
-        console.log(item + " " + cost + " " + mates);
-
         summary[x] = {
             items: item,
             costs: cost,
-            mates: mates
+            mates: mates,
+            mateList: mateString
         }
     }
     $.post("/api/post", summary);

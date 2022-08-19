@@ -2,15 +2,21 @@ $(document).ready(createTable());
 
 function createTable(){
     $.get('/api/splits', function(data){
-        if(data[0].length > 0){
-            for(let x=0; x < data[0].length; x++){
+        // console.log(Object.values(data));
+
+        splitLength = Object.values(data)[0];
+        split = Object.values(data)[1];
+        
+        if(splitLength > 0){
+            for(let x=0; x < splitLength; x++){
                 let body = document.getElementById("dataBody");
                 let trSort = document.createElement("tr");
-                trSort.setAttribute("class", "sortme")
+                trSort.setAttribute("class", "sortme");
+                trSort.setAttribute("id", "trSort");
 
                 let thRow = document.createElement("th");
                 thRow.setAttribute("scope", "row");
-                thRow.setAttribute("class", "col-1 r")
+                thRow.setAttribute("class", "col-1 r");
 
                 let td1 = document.createElement("td");
                 let td2 = document.createElement("td");
@@ -43,26 +49,40 @@ function createTable(){
                 trSort.appendChild(td5);
                 body.appendChild(trSort);
             }
+            generateMatesData(split);
         }
-        generateData(data);
     })
 }
 
-function generateData(data){
-    //console.log(data); //even = summary ; odd = items
-    for(let y=0; y < data[0].length; y++){
-        for(let x=0; x < data.length; x++){
-            if(x % 2 == 0){
-            }
-            else{
-                let td4 = document.getElementById("td4");
-                //console.log(data[x].splits)
-                for (var key in data[x].splits){
-                    for(var k in data[x].splits[key]){
-                        console.log(data[x].splits[key][k]['Users'])
-                    }
-                }
-            }
+function generateMatesData(data){
+    // console.log(data);
+
+    //Item Data
+    // for(let x=0; x < data.length; x+=3){
+    //     console.log(data[x]);
+    // }
+
+    //Item Split
+    // for(let x=1; x < data.length; x+=3){
+    //     console.log(data[x]);
+    // }
+
+    //Shared Mates
+    let i = 1;
+    for(let x=2; x < data.length; x+=3){
+        let matesCell = document.getElementsByTagName("table")[0].rows[i].cells[4];
+        getFirstValues = Object.values(data[x]);
+        getNextValues = Object.values(getFirstValues)[0];
+        getLastValues = Object.values(getNextValues)[0];
+        getKeys = Object.keys(getLastValues);
+        getKeys = getKeys.join(", ");
+        matesCell.textContent = getKeys;
+        
+        if(i < data.length){
+            i++;
         }
     }
+
+
+    
 }

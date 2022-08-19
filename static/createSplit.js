@@ -99,7 +99,7 @@ function showCurrentMates(){
         .append($('<td>').append($("<button>").attr('type','button').attr('class','btn btn-danger btn-sm btnRemoveMate').text('x')))
     );
     }
-    console.log(mates);
+    // console.log(mates);
 }
 
 function saveMates(){
