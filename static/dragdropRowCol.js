@@ -13,7 +13,7 @@ $(function() {
         });
     }
 
-    $(".table > thead > tr").sortable({
+    $(".table-custom > thead > tr").sortable({
         start: function(event, ui) {
             ui.item.data("source", ui.item.index());
             clone = $(ui.item[0].outerHTML).clone();
@@ -30,12 +30,12 @@ $(function() {
         
         update: function(event, ui) {
             moveColumn($(this).closest("table"), ui.item.data("source"), ui.item.index());
-            $(".table > tbody").sortable("refresh");
+            $(".table-custom > tbody").sortable("refresh");
         }
     });
 
 
-    $(".table > tbody").sortable({
+    $(".table-custom > tbody").sortable({
         start: function(event, ui) {
             clone = $(ui.item[0].outerHTML).clone();
         },
@@ -53,15 +53,15 @@ $(function() {
     
 });
 
-function newRow() {
-    $("#table").find('tbody')
-        .append($('<tr>').attr('class','sortme')
-            .append($('<th>').attr('scope', 'row').attr('class','r').addClass('col-1').text('New'))
-            .append($('<td>').attr('class','col-4').text('closed'))
-            .append($('<td>').attr('class','col-2').text('closed'))
-            .append($('<td>').attr('class','col-2').text('closed'))
-            .append($('<td>').attr('class','col-2').text('closed'))
-            .append($('<td>').attr('class','col-1').append($('<button>').attr('type','button')
-                .attr('class','btn').addClass('btn-outline-success').addClass('btn-sm').text('Archive')))
-        );
-}
+// function newRow() {
+//     $("#table").find('tbody')
+//         .append($('<tr>').attr('class','sortme')
+//             .append($('<th>').attr('scope', 'row').attr('class','r').addClass('col-1').text('New'))
+//             .append($('<td>').attr('class','col-4').text('closed'))
+//             .append($('<td>').attr('class','col-2').text('closed'))
+//             .append($('<td>').attr('class','col-2').text('closed'))
+//             .append($('<td>').attr('class','col-2').text('closed'))
+//             .append($('<td>').attr('class','col-1').append($('<button>').attr('type','button')
+//                 .attr('class','btn').addClass('btn-outline-success').addClass('btn-sm').text('Archive')))
+//         );
+// }

@@ -14,7 +14,7 @@ function newSplit(){
 
 function createNewSplitTab(){
     let newSplitTab = document.createElement("a");
-    newSplitTab.setAttribute("class", "nav-item nav-link");
+    newSplitTab.setAttribute("class", "nav-item nav-link active");
     newSplitTab.setAttribute("id", "newSplitTab");
     newSplitTab.setAttribute("data-bs-toggle", "tab");
     newSplitTab.setAttribute("data-bs-target", "#nav-newSplit");
@@ -142,6 +142,7 @@ function saveAndCalculate(){
     $("#summary").append($('<thead>')
         .append($('<tr>')
             .append($('<th>').text('Mate')).append($('<th>').text('Cost')))).append($('<tbody>'));
+    $("#summary").removeClass('d-none');
 }
 
 

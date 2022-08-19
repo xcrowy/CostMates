@@ -24,3 +24,7 @@
 .table-fixed tbody td button{
     font-size: .6rem;
 }
+
+.table {
+    margin: 0;
+}
