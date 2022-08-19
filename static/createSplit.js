@@ -1,5 +1,12 @@
-var mates = ["erica", "sharon", "jacky"];
-var email = ["erica@gmail.com", "sharon@gmail.com", "jacky@gmail.com"];
+// var mates = ["erica", "sharon", "jacky"];
+// var email = ["erica@gmail.com", "sharon@gmail.com", "jacky@gmail.com"];
+
+var mates;
+
+var itemIndex = document.getElementsByName("items").length;
+var costIndex = document.getElementsByName("costs").length;
+var item = "";
+var cost = "";
 
 function getName(email){
     return email.split('@')[0];
@@ -50,74 +57,86 @@ function showTab(tab, content){
     newSplitContent.classList.add("show");
 }
 
-function testDrop(){
-    $("#outside").append($("<select>").attr('id','mateDropDown').attr('class','selectpicker').prop('multiple',true))
-
-        populateDropdown();
-}
-
 function addItem() {
     let i = document.getElementById("splitForm").rows.length;
     $("#splitForm").find('tbody')
         .append($('<tr>').attr('class','sortme')
             .append($('<th>').attr('scope', 'row').attr('class','r').text(i))
-            .append($('<td>').append("<div>").attr('contenteditable','true'))
-            .append($('<td>').append("<div>").attr('contenteditable','true'))
+            .append($('<td>').append("<div>").attr('contenteditable','true').attr('name', 'items'))
+            .append($('<td>').append("<div>").attr('contenteditable','true').attr('name', 'costs'))
             .append($('<td>').append($("<select>").attr('id','mateDropDown').attr('class','selectpicker').attr('data-container','body').prop('multiple',true)))
         );
     $("#outside").append($("<select>").attr('id','mateDropDown').attr('class','selectpicker').prop('multiple',true))
 
-        populateDropdown();
+
+    populateDropdown();
 }
 
 function populateDropdown(){
     let dropdowns = document.getElementsByClassName("selectpicker");
-    for(let i = 0; i<dropdowns.length; i++){
-      
-        for(let j=0; j<mates.length; j++){
-            let o = document.createElement("option");
-            o.setAttribute("value", j);
-            o.text = mates[j];
-            dropdowns[i].appendChild(o);
+
+    $.get('/api/getLoggedUser', function(data){
+        console.log(data.user);
+        for(let i = 0; i < dropdowns.length; i++){
+            for(let j=0; j < mates.length; j++){
+                let o = document.createElement("option");
+                o.setAttribute("value", j);
+                o.text = mates[j];
+                dropdowns[i].appendChild(o);
+            }
         }
-    }
-    $('select').selectpicker()
+        $('select').selectpicker();
+    })
 
 }
 
 function showCurrentMates(){
-    let l = document.getElementById("currentMateList");
-    $('#currentMateList').empty();
-    for(let i=0; i<mates.length; i++){
-        $('#currentMateList').append($('<tr>')
-        .append($('<td>').attr('class','name').text(mates[i]))
-        .append($('<td>').attr('class','email').text(email[i]))
-        .append($('<td>').append($("<button>").attr('type','button').attr('class','btn btn-danger btn-sm btnRemoveMate').text('x')))
-    );
-    }
-    console.log(mates);
+    $.get('/api/getSharedMates', function(data){
+        getFirstValue = Object.values(data)[0];
+        getNextValue = Object.values(getFirstValue)[0];
+        getLastValue = Object.values(getNextValue)[0];
+        mates = Object.keys(getLastValue);
+
+        // $('#currentMateList').empty();
+        
+        // for(let i=0; i< mates.length; i++){
+        //     $('#currentMateList').append($('<tr>')
+        //     .append($('<td>').attr('class','name').text(mates[i]))
+        //     .append($('<td>').attr('class','email').text(email[i]))
+        //     .append($('<td>').append($("<button>").attr('type','button').attr('class','btn btn-danger btn-sm btnRemoveMate').text('x')))
+        // )}
+    })
 }
 
 function saveMates(){
     let l = document.getElementById("currentMateList");
-    newMates =[];
-    newEmail =[];
+    let email = {}
     for(let i=0; i<l.children.length; i++){
         let row = l.children[i];
-        newMates.push(row.querySelector('.name').textContent);
-        newEmail.push(row.querySelector('.email').textContent);
+        email[i] = {
+            "email": row.querySelector('.email').textContent
+        }
     }
-    mates = newMates;
-    email = newEmail;
+    $.post('/api/shareSplits', email);
 }
 
 function addMates(){
     let e = document.getElementById('newMateEmail');
-    $('#currentMateList').append($('<tr>')
-        .append($('<td>').attr('class','name').text(getName(e.value)))
-        .append($('<td>').attr('class','email').text(e.value))
-        .append($('<td>').append($("<button>").attr('type','button').attr('class','btn btn-danger btn-sm btnRemoveMate').text('x'))));
-    e.value = '';
+
+    // display a text that says user does not exist
+
+    $.get('/api/checkUserExist', { "email": e.value }, function(data){
+        if(data.name != ""){
+            $('#currentMateList').append($('<tr>')
+                .append($('<td>').attr('class','name').text(data.name))
+                .append($('<td>').attr('class','email').text(e.value))
+                .append($('<td>').append($("<button>").attr('type','button').attr('class','btn btn-danger btn-sm btnRemoveMate').text('x'))));
+            e.value = '';
+        }
+        else{
+            console.log("Does not exist");
+        }
+    })
 }
 
 $("#currentMateList").on('click', '.btnRemoveMate', function () {
@@ -136,14 +155,4 @@ function discardChanges(){
 function hideTab(tab){
     document.getElementById(tab).remove();
 }
-
-function saveAndCalculate(){
-    $("#summary").empty();
-    $("#summary").append($('<thead>')
-        .append($('<tr>')
-            .append($('<th>').text('Mate')).append($('<th>').text('Cost')))).append($('<tbody>'));
-    $("#summary").removeClass('d-none');
-}
-
-
 
