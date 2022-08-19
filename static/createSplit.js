@@ -19,7 +19,7 @@ function newSplit(){
 
 function createNewSplitTab(){
     let newSplitTab = document.createElement("a");
-    newSplitTab.setAttribute("class", "nav-item nav-link");
+    newSplitTab.setAttribute("class", "nav-item nav-link active");
     newSplitTab.setAttribute("id", "newSplitTab");
     newSplitTab.setAttribute("data-bs-toggle", "tab");
     newSplitTab.setAttribute("data-bs-target", "#nav-newSplit");
@@ -140,5 +140,4 @@ function discardChanges(){
 function hideTab(tab){
     document.getElementById(tab).remove();
 }
-
 
