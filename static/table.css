@@ -24,11 +24,3 @@
 .table-fixed tbody td button{
     font-size: .6rem;
 }
-
-body {
-    background: #94ebdb;
-    background: -webkit-linear-gradient(to bottom, #93ebdb, #ffffbc);
-    background: linear-gradient(to bottom, #93ebdb, #ffffbc);
-    min-height: 100vh;
-    padding: 0 20px 20px 20px;
-}
