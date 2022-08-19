@@ -1,4 +1,5 @@
 from datetime import timedelta
+import email
 from turtle import pos, update
 from flask import Flask, render_template, jsonify, request, redirect, session, Response
 import firebase_admin
@@ -118,6 +119,43 @@ def getUserTablePref():
     updateUserHeaderPref(position)
     return Response(status=200)
 
+@app.route('/api/splits', methods=['GET'])
+def getUserSplit():
+    userSplit = []
+    ref = db.reference('/Users')
+    getRef = ref.get()
+    email = session['email']
+    user = auth.get_user_by_email(email)
+    uid = user.uid
+    for key, value in getRef.items():
+        dataRef = db.reference('/Users/' + key)
+        getData = dataRef.get()
+        for k, v in getData.items():
+            if k == uid:
+                userSplitsRef = db.reference('/Users/' + key + "/" + k + "/splits")
+                for x in getUserSplitId(userSplitsRef):
+                    splitRef = db.reference('/Splits/splitId_' + x)
+                    splitData = splitRef.get()
+                    for val in splitData.values():
+                        resp = {
+                            "splits": val,
+                            "length": len(getUserSplitId(userSplitsRef))
+                        }
+                        userSplit.append(resp)
+                return jsonify(userSplit)
+
+
+def getUserSplitId(ref):
+    splitData = []
+    getSplit = ref.get()
+    if getSplit != None:
+        for sk, sv in getSplit.items():
+            for val in sv.values():
+                splitData.append(val)
+    return splitData
+    
+            
+
 def createUserDatabase(email, userId):
     user = auth.get_user_by_email(email)
     uid = userId
@@ -128,9 +166,6 @@ def createUserDatabase(email, userId):
             "email": user.email,
             "order": {
                 0: ""
-            },
-            "splits": {
-                "id": '0'
             }
         }
     }
@@ -149,6 +184,7 @@ def updateUserHeaderPref(position):
                 dataRef.child(k).update({"order": position})
 
 def updateUserSplitId(splitId):
+    _uid = str(uuid.uuid4())
     ref = db.reference('/Users')
     getUser = ref.get()
     user = auth.get_user_by_email(session['email'])
@@ -158,7 +194,7 @@ def updateUserSplitId(splitId):
         getData = dataRef.get()
         for k, v in getData.items():
             if k == uid:
-                dataRef.child(k).update({"splits": splitId})
+                dataRef.child(k).child("splits").push({_uid: splitId})
 
 def create_user(userId: str, displayName: str, email: str, password: str) -> UserRecord:
     return auth.create_user(uid=userId, display_name=displayName, email=email, password=password)

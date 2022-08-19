@@ -49,11 +49,6 @@
         </div>
     </nav>
 
-    <button class="button" onclick="newRow()">
-        New Row
-    </button>
-
-
     <div class="tab-content" id="myTabContent">
         <div class="tab-pane fade show active" id="nav-home" role="tabpanel" aria-labelledby="home-tab">
             <div class="table-responsive bg-white rounded shadow">
@@ -68,31 +63,15 @@
                         <th scope="col" class="sortme col-1" onmousemove="updateHeaders()">Archive</th>
                     </tr>
                     </thead>
-                    <tbody>
-                        <tr class="sortme">
-                            <th scope="row" class="col-1 r">Row I</th>
-                            <td class="col-4">Closed</td>
-                            <td class="col-2">Open</td>
-                            <td class="col-2">Open</td>
-                            <td class="col-2">Open</td>
+                    <tbody id="dataBody">
+                        <!-- <tr class="sortme">
+                            <th scope="row" class="col-1 r"></th>
+                            <td class="col-4"></td>
+                            <td class="col-2"></td>
+                            <td class="col-2"></td>
+                            <td class="col-2"></td>
                             <td class="col-1 button"><button type="button" class="btn btn-outline-success btn-sm">Archive</button></td>
-                        </tr>
-                        <tr class="sortme">
-                            <th scope="row" class="col-1 r">Row II</th>
-                            <td class="col-4">OpenOpenOpenOpenOpenOpenOpenOpenOpenOpenOpenOpenOpenOpenOpenOpenOpenOpenOpenOpen</td>
-                            <td class="col-2">Closed</td>
-                            <td class="col-2">Open</td>
-                            <td class="col-2">Open</td>
-                            <td class="col-1 button"><button type="button" class="btn btn-outline-success btn-sm">Archive</button></td>
-                        </tr>
-                        <tr class="sortme">
-                            <th scope="row" class="col-1 r">Row III</th>
-                            <td class="col-4">Open</td>
-                            <td class="col-2">Open</td>
-                            <td class="col-2">ClosedClosedClosedClosedClosed</td>
-                            <td class="col-2">Closed</td>
-                            <td class="col-1"><button type="button" class="btn btn-outline-success btn-sm">Archive</button></td>
-                        </tr>
+                        </tr> -->
                     </tbody>
                 </table>
             </div>
@@ -209,5 +188,6 @@
     <script src="../static/dragdropRowCol.js"></script>
     <script src="../static/createSplit.js"></script>
     <script src="../static/splitForm.js"></script>
+    <script src="../static/loadData.js"></script>
 </body>
 </html>
