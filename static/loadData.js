@@ -82,7 +82,7 @@ function generateMatesData(data){
             i++;
         }
     }
-
-
-    
+    //dropdown for selection of mates should also include yourself
+    //assume when you create new split and click add mates -> you are already joined in --> homepage -> Mates -> should also include yourself. [x]
+    //price --> check all splits --> Mates --> check if key matches your displayName, if so, display the value for price
 }

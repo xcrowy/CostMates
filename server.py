@@ -1,6 +1,4 @@
 from datetime import timedelta
-import email
-from turtle import pos, update
 from flask import Flask, render_template, jsonify, request, redirect, session, Response
 import firebase_admin
 from firebase_admin import credentials
@@ -73,8 +71,10 @@ def logout():
     session.pop("email", None)
     return redirect("/login")
 
+# API Calls
 @app.route('/api/post', methods=['POST'])
 def createSplitDatabase():
+    user = auth.get_user_by_email(session['email'])
     summary = {}
     sharedMates = {}
     uid = str(uuid.uuid4())
@@ -89,6 +89,7 @@ def createSplitDatabase():
 
         mateList = request.form[str(i) + "[mateList]"]
         mateList = mateList.split(',')
+        mateList.append(user.display_name)
         for m in mateList:
             m = m.strip()
             if m not in sharedMates:
@@ -142,7 +143,7 @@ def getUserSplit():
                     splitRef = db.reference('/Splits/splitId_' + x)
                     splitData = splitRef.get()
                     for val in splitData.values():
-                        print(val)
+                        # print(val)
                         resp = {
                             "data": val
                         }
@@ -153,7 +154,87 @@ def getUserSplit():
                 }
                 return jsonify(userSplit)
 
+@app.route('/api/getLoggedUser', methods=['GET'])
+def getCurrentLoggedUser():
+     getUser = auth.get_user_by_email(session['email'])
+     user = {
+        "user": getUser.display_name
+     }
+     return jsonify(user)
 
+
+@app.route('/api/checkUserExist', methods=['GET'])
+def checkUserExist():
+    email = request.args.get('email')
+    data = {}
+
+    try:
+        getUser = auth.get_user_by_email(email)
+        data = {
+            "name": getUser.display_name
+        }
+    except:
+        data = {
+            "name": ""
+        }
+    return jsonify(data)
+
+@app.route('/api/getSharedMates', methods=['GET'])
+def getSharedMates():
+    mates = {}
+    mateList = []
+    ref = db.reference('/Users')
+    getRef = ref.get()
+    email = session['email']
+    user = auth.get_user_by_email(email)
+    uid = user.uid
+    for key, value in getRef.items():
+        dataRef = db.reference('/Users/' + key)
+        getData = dataRef.get()
+        for k, v in getData.items():
+            if k == uid:
+                userSplitsRef = db.reference('/Users/' + key + "/" + k + "/splits")
+                for x in getUserSplitId(userSplitsRef):
+                    splitRef = db.reference('/Splits/splitId_' + x)
+                    splitData = splitRef.get()
+                    sharedMates = splitData['SharedMates']
+                    for mates in sharedMates.values():
+                        resp = {
+                            "SharedMates": mates
+                        }
+                        mateList.append(resp)
+                mates = {
+                    "mates": mateList
+                }
+                return jsonify(mates)
+
+@app.route('/api/shareSplits', methods=['POST'])
+def shareSplits():
+    getSessionUser = auth.get_user_by_email(session['email'])
+    uid = getSessionUser.uid
+
+    ref = db.reference('/Users')
+    getRef = ref.get()
+    for key, value in getRef.items():
+        dataRef = db.reference('/Users/' + key)
+        getData = dataRef.get()
+        for k, v in getData.items():
+            if k == uid:
+                userSplitsRef = db.reference('/Users/' + key + "/" + k + "/splits")
+                getSplit = ref.get(userSplitsRef)
+                if getSplit != None:
+                    for sk, sv in getSplit.items():
+                        pass
+    # for i in range(0, int(len(request.form))):
+    #     email = request.form[str(i) + "[email]"]
+    #     getUser = auth.get_user_by_email(email)
+    #     getUid = getUser.uid
+
+
+
+    return Response(status=200)
+
+#Helper Functions
 def getUserSplitId(ref):
     splitData = []
     getSplit = ref.get()
@@ -164,7 +245,6 @@ def getUserSplitId(ref):
     return splitData
     
             
-
 def createUserDatabase(email, userId):
     user = auth.get_user_by_email(email)
     uid = userId
@@ -204,6 +284,9 @@ def updateUserSplitId(splitId):
         for k, v in getData.items():
             if k == uid:
                 dataRef.child(k).child("splits").push({_uid: splitId})
+
+def updateMateSplitId(uid, splitKeyId, splitId):
+    pass
 
 def create_user(userId: str, displayName: str, email: str, password: str) -> UserRecord:
     return auth.create_user(uid=userId, display_name=displayName, email=email, password=password)
