@@ -1,15 +1,14 @@
-$(document).ready(createTable());
+window.onload = createTable();
 
 function createTable(){
-    $.get('/api/splits', function(data){
-        // console.log(Object.values(data));
+    $('#dataBody').empty();
 
+    $.get('/api/splits', function(data){
         splitLength = Object.values(data)[0];
         split = Object.values(data)[1];
-        
+        let body = document.getElementById("dataBody");
         if(splitLength > 0){
             for(let x=0; x < splitLength; x++){
-                let body = document.getElementById("dataBody");
                 let trSort = document.createElement("tr");
                 trSort.setAttribute("class", "sortme");
                 trSort.setAttribute("id", "trSort");
@@ -38,6 +37,8 @@ function createTable(){
                 let tdButton = document.createElement("button");
                 tdButton.setAttribute("type", "button");
                 tdButton.setAttribute("class", "btn btn-outline-success btn-sm");
+                tdButton.setAttribute("id", "archive");
+                tdButton.addEventListener("click", archiveSystem);
                 tdButton.textContent = "Archive";
 
                 td5.appendChild(tdButton);
@@ -49,12 +50,12 @@ function createTable(){
                 trSort.appendChild(td5);
                 body.appendChild(trSort);
             }
-            generateMatesData(split);
+            generateData(split);
         }
     })
 }
 
-function generateMatesData(data){
+function generateData(data){
     // console.log(data);
 
     //Item Data
@@ -63,11 +64,29 @@ function generateMatesData(data){
     // }
 
     //Item Split
-    // for(let x=1; x < data.length; x+=3){
-    //     console.log(data[x]);
-    // }
+    generatePrice();
 
     //Shared Mates
+    generateMates(data);
+}
+
+function generatePrice(){
+    let i = 1;
+    $.get('/api/price', function(data){
+        getValues = Object.values(data)[0];
+        for(let x=0; x < getValues.length; x++){
+            let priceCell = document.getElementsByTagName("table")[0].rows[i].cells[3];
+            let getPrice = getValues[x];
+            priceCell.textContent = getPrice;
+
+            if(i < getValues.length){
+                i++;
+            }
+        }
+    });
+}
+
+function generateMates(data){
     let i = 1;
     for(let x=2; x < data.length; x+=3){
         let matesCell = document.getElementsByTagName("table")[0].rows[i].cells[4];
@@ -82,7 +101,4 @@ function generateMatesData(data){
             i++;
         }
     }
-    //dropdown for selection of mates should also include yourself
-    //assume when you create new split and click add mates -> you are already joined in --> homepage -> Mates -> should also include yourself. [x]
-    //price --> check all splits --> Mates --> check if key matches your displayName, if so, display the value for price
 }

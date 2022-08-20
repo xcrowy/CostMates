@@ -15,6 +15,7 @@ function createHomeTab(){
     homeTab.setAttribute("role", "tab");
     homeTab.setAttribute("aria-controls", "nav-home");
     homeTab.setAttribute("aria-selected", "true");
+    homeTab.setAttribute('onclick', 'createTable()');
     homeTab.textContent = "Home";
     document.getElementById("tabs").appendChild(homeTab);
 }

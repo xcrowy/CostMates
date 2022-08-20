@@ -106,7 +106,7 @@
                     </div>
                     
                     <div class="d-grid gap-2 d-flex justify-content-end py-2" id="splitButtons">
-                        <button type="submit" class="btn btn-success" onclick="postData()">Save & Calculate</button>
+                        <button type="submit" class="btn btn-success" id="calculate" onclick="sendEmail();">Save & Calculate</button>
                         <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#confirmationModal">Cancel</button>
                         <button type="button" class="btn btn-success" onclick="close()">Close</button>
                     </div>
@@ -149,7 +149,7 @@
                         
                             <div class="modal-footer border-top-0 d-flex justify-content-between">
                                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                <button type="button" class="btn btn-success" data-bs-dismiss="modal" onclick="saveMates()">Save</button>
+                                <button type="button" class="btn btn-success" id="saveMates" data-bs-dismiss="modal" onclick="saveMates()">Save</button>
                             </div>
                         </div>
                     </div>
@@ -283,6 +283,5 @@
     <script src="../static/dragdropRowCol.js"></script>
     <script src="../static/createSplit.js"></script>
     <script src="../static/loadData.js"></script>
-    <script src="../static/splitForm.js"></script>
 </body>
 </html>
