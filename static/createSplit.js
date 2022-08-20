@@ -247,5 +247,11 @@ function updateHeaders(){
         4: document.getElementsByTagName("table")[0].rows[0].cells[5].textContent,
     }
     $.post("/api/updateHeaders", position);
-    
+}
+
+function archiveSystem(event){
+    console.log("Archived");
+    getTd = event.target.parentNode;
+    getRow = getTd.parentNode;
+    console.log(getRow); //Move row to archive
 }

@@ -197,8 +197,6 @@ def shareSplits():
                 if getSplit != None:
                     for sk, sv in getSplit.items():
                         sharedSplit = sv
-                else:
-                    print("Noneaa")
                     
     for i in range(0, int(len(request.form))):
         email = request.form[str(i) + "[email]"]

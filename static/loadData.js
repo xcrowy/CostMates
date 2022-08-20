@@ -37,6 +37,8 @@ function createTable(){
                 let tdButton = document.createElement("button");
                 tdButton.setAttribute("type", "button");
                 tdButton.setAttribute("class", "btn btn-outline-success btn-sm");
+                tdButton.setAttribute("id", "archive");
+                tdButton.addEventListener("click", archiveSystem);
                 tdButton.textContent = "Archive";
 
                 td5.appendChild(tdButton);
