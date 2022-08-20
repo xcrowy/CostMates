@@ -1,5 +1,5 @@
-// var mates = ["erica", "sharon", "jacky"];
-// var email = ["erica@gmail.com", "sharon@gmail.com", "jacky@gmail.com"];
+// var mates = [];
+// var email = [];
 
 var mates;
 
@@ -20,6 +20,7 @@ function newSplit(){
 
 
 function createNewSplitTab(){
+    makeTab(newSplitHtml);
     let newSplitTab = document.createElement("a");
     newSplitTab.setAttribute("class", "nav-item nav-link active");
     newSplitTab.setAttribute("id", "newSplitTab");
@@ -35,6 +36,11 @@ function createNewSplitTab(){
 
     let newSplitButton = document.getElementById("newSplitButton");
     newSplitButton.setAttribute("hidden","");
+}
+
+function makeTab(html){
+    let a = document.getElementById("myTabContent");
+    a.insertAdjacentHTML('beforeend',html);
 }
 
 function unselectTabs(){
@@ -65,6 +71,7 @@ function addItem() {
             .append($('<td>').append("<div>").attr('contenteditable','true').attr('name', 'items'))
             .append($('<td>').append("<div>").attr('contenteditable','true').attr('name', 'costs'))
             .append($('<td>').append($("<select>").attr('id','mateDropDown').attr('class','selectpicker').attr('data-container','body').prop('multiple',true)))
+            .append($('<td>').append($("<button>").attr('type','button').attr('class','btn btn-danger btn-sm').attr('onclick', 'removeRow(this)').text('x')))
         );
     $("#outside").append($("<select>").attr('id','mateDropDown').attr('class','selectpicker').prop('multiple',true))
 
@@ -130,7 +137,7 @@ function addMates(){
             $('#currentMateList').append($('<tr>')
                 .append($('<td>').attr('class','name').text(data.name))
                 .append($('<td>').attr('class','email').text(e.value))
-                .append($('<td>').append($("<button>").attr('type','button').attr('class','btn btn-danger btn-sm btnRemoveMate').text('x'))));
+                .append($('<td>').append($("<button>").attr('type','button').attr('class','btn btn-danger btn-sm').attr('onclick', 'removeRow(this)').text('x'))));
             e.value = '';
         }
         else{
@@ -139,9 +146,12 @@ function addMates(){
     })
 }
 
-$("#currentMateList").on('click', '.btnRemoveMate', function () {
-    $(this).closest('tr').remove();
-});
+function removeRow(row){{
+    console.log(row);
+    $(row).closest('tr').remove();
+}
+
+}
 
 function discardChanges(){
     let newSplitButton = document.getElementById("newSplitButton");
@@ -149,10 +159,119 @@ function discardChanges(){
 
     unselectTabs();
     showTab("homeTab", "nav-home");
-    hideTab("newSplitTab");
+    removeTab("newSplitTab");
 }
 
-function hideTab(tab){
+function removeTab(tab){
     document.getElementById(tab).remove();
 }
 
+
+
+newSplitHtml = `<div class="tab-pane fade" id="nav-newSplit" role="tabpanel" aria-labelledby="newSplit-tab">
+
+<div class="d-grid gap-2 d-flex py-2">
+    <h2 contenteditable='true' class='mr-auto p-2'>New Split</h2>
+    <button class="btn btn-success p-2" onclick="addItem()">
+        Add Item
+    </button>
+    <button type="button" class="btn btn-outline-success p-2" data-bs-toggle="modal" data-bs-target="#editMateListModal" onclick="showCurrentMates()">
+        Edit Mates
+    </button>
+</div>
+<div class="table-responsive bg-white rounded shadow">
+    <table class="table mytable table-bordered" id="splitForm">
+        <thead>
+        <tr>
+            <td id="corner"></td>
+            <th scope="col" class="sortme">Item Name</th>
+            <th scope="col" class="sortme">Cost</th>
+            <th scope="col" class="sortme">Mates</th>
+            <th></th>
+        </tr>
+        </thead>
+        <tbody id="itemList">
+
+        </tbody>
+    </table>
+</div>
+
+<div class="pt-3">
+    <div class="table-responsive bg-white rounded shadow">
+        <table class="table mytable table-bordered d-none" id="summary">
+            
+        </table>
+    </div>
+    
+    <div class="d-grid gap-2 d-flex justify-content-end py-2" id="splitButtons">
+        <button type="submit" class="btn btn-success" onclick="postData()">Save & Calculate</button>
+        <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#confirmationModal">Cancel</button>
+        <button type="button" class="btn btn-success" onclick="close()">Close</button>
+    </div>
+</div>
+
+<div class="modal fade" id="editMateListModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+        <div class="modal-content" style="min-width: 500px;">
+            <div class="modal-header border-bottom-0">
+                <h4 class="modal-title" id="myModalLabel">
+                    Your mates
+                </h4>
+                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body px-md-5">
+                <table class="table table-image">
+                <thead>
+                    <tr>
+                        <th>Display Name</th>
+                        <th>Email</th>
+                        <th>Remove</th>
+                    </tr>
+                </thead>
+                <tbody id="currentMateList">
+                
+                </tbody>
+                </table>
+            </div>
+        
+
+            <div class="input-group px-md-5">
+                <input type="text" class="form-control" id="newMateEmail" placeholder="Email" aria-label="Email" aria-describedby="basic-addon2" type="email" required>
+                <div class="input-group-append">
+                    <button class="btn btn-outline-secondary" type="button" onclick="addMates()"><i class="bi bi-person-plus-fill"></i></button>
+                </div>
+            </div>
+        
+        
+            <div class="modal-footer border-top-0 d-flex justify-content-between">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-success" data-bs-dismiss="modal" onclick="saveMates()">Save</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="confirmationModal" tabindex="-1" role="dialog" aria-labelledby="confirmationModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+        <div class="modal-content" style="min-width: 500px;">
+            <div class="modal-header border-bottom-0">
+                <h4 class="modal-title" id="confirmationModalLabel">
+                    You have unsaved changes.
+                </h4>
+                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body px-md-5">
+                Are you sure you want to continue?
+            </div>
+
+            <div class="modal-footer border-top-0 d-flex justify-content-between">
+                <button type="button" class="btn btn-success" data-bs-dismiss="modal" onclick="continueEditing()">No, continue editing</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" onclick="discardChanges()">Yes, discard changes</button>
+            </div>
+        </div>
+    </div>
+</div>
+</div>`

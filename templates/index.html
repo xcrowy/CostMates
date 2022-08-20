@@ -16,7 +16,7 @@
     <link rel="stylesheet" href="../static/table.css">
     <link rel="stylesheet" href="../static/menu.css">
 </head>
-
+<body>
     <nav class="navbar navbar-expand navbar-light">
         <div class="container">
             <a class="navbar-brand" href="./login">
@@ -72,111 +72,6 @@
             </div>
 
             <div class="tab-pane fade" id="nav-archive" role="tabpanel" aria-labelledby="archive-tab"></div>
-
-            <div class="tab-pane fade" id="nav-newSplit" role="tabpanel" aria-labelledby="newSplit-tab">
-                <div class="d-grid gap-2 d-flex justify-content-end py-2">
-                    <button class="btn btn-success" onclick="addItem()">
-                        Add Item
-                    </button>
-                    <button type="button" class="btn btn-outline-success" data-bs-toggle="modal" data-bs-target="#editMateListModal" onclick="showCurrentMates()">
-                        Edit Mates
-                    </button>
-                </div>
-                <div class="table-responsive bg-white rounded shadow">
-                    <table class="table mytable table-bordered" id="splitForm">
-                        <thead>
-                        <tr>
-                            <td id="corner"></td>
-                            <th scope="col" class="sortme">Item Name</th>
-                            <th scope="col" class="sortme">Cost</th>
-                            <th scope="col" class="sortme">Mates</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-
-                        </tbody>
-                    </table>
-                </div>
-
-                <div class="pt-3">
-                    <div class="table-responsive bg-white rounded shadow">
-                        <table class="table mytable table-bordered d-none" id="summary">
-                            
-                        </table>
-                    </div>
-                    
-                    <div class="d-grid gap-2 d-flex justify-content-end py-2" id="splitButtons">
-                        <button type="submit" class="btn btn-success" onclick="postData()">Save & Calculate</button>
-                        <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#confirmationModal">Cancel</button>
-                        <button type="button" class="btn btn-success" onclick="close()">Close</button>
-                    </div>
-                </div>
-
-                <div class="modal fade" id="editMateListModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                    <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
-                        <div class="modal-content" style="min-width: 500px;">
-                            <div class="modal-header border-bottom-0">
-                                <h4 class="modal-title" id="myModalLabel">
-                                    Your mates
-                                </h4>
-                                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
-                                </button>
-                            </div>
-                            <div class="modal-body px-md-5">
-                                <table class="table table-image">
-                                <thead>
-                                    <tr>
-                                        <th>Display Name</th>
-                                        <th>Email</th>
-                                        <th>Remove</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="currentMateList">
-                                
-                                </tbody>
-                                </table>
-                            </div>
-                        
-
-                            <div class="input-group px-md-5">
-                                <input type="text" class="form-control" id="newMateEmail" placeholder="Email" aria-label="Email" aria-describedby="basic-addon2" type="email" required>
-                                <div class="input-group-append">
-                                    <button class="btn btn-outline-secondary" type="button" onclick="addMates()"><i class="bi bi-person-plus-fill"></i></button>
-                                </div>
-                            </div>
-                        
-                        
-                            <div class="modal-footer border-top-0 d-flex justify-content-between">
-                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                <button type="button" class="btn btn-success" data-bs-dismiss="modal" onclick="saveMates()">Save</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="modal fade" id="confirmationModal" tabindex="-1" role="dialog" aria-labelledby="confirmationModalLabel" aria-hidden="true">
-                    <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
-                        <div class="modal-content" style="min-width: 500px;">
-                            <div class="modal-header border-bottom-0">
-                                <h4 class="modal-title" id="confirmationModalLabel">
-                                    You have unsaved changes.
-                                </h4>
-                                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
-                                </button>
-                            </div>
-                            <div class="modal-body px-md-5">
-                                Are you sure you want to continue?
-                            </div>
-
-                            <div class="modal-footer border-top-0 d-flex justify-content-between">
-                                <button type="button" class="btn btn-success" data-bs-dismiss="modal" onclick="continueEditing()">No, continue editing</button>
-                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" onclick="discardChanges()">Yes, discard changes</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
         </div>
     </div>
 
