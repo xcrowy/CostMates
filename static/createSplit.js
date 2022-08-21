@@ -13,6 +13,7 @@ function getName(email){
 }
 
 function newSplit(){
+    removeExcessTab();
     createNewSplitTab();
     unselectTabs();
     showTab("newSplitTab","nav-newSplit");
@@ -20,7 +21,7 @@ function newSplit(){
 
 
 function createNewSplitTab(){
-    makeTab(newSplitHtml);
+    makeTabContent(newSplitHtml);
     let newSplitTab = document.createElement("a");
     newSplitTab.setAttribute("class", "nav-item nav-link active");
     newSplitTab.setAttribute("id", "newSplitTab");
@@ -38,7 +39,21 @@ function createNewSplitTab(){
     newSplitButton.setAttribute("hidden","");
 }
 
-function makeTab(html){
+function createTab(id, targetID, name){
+    let newSplitTab = document.createElement("a");
+    newSplitTab.setAttribute("class", "nav-item nav-link active");
+    newSplitTab.setAttribute("id", id);
+    newSplitTab.setAttribute("data-bs-toggle", "tab");
+    newSplitTab.setAttribute("data-bs-target", "#nav-"+ targetID);
+    newSplitTab.setAttribute("role", "tab");
+    newSplitTab.setAttribute("aria-controls", "nav-" + targetID);
+    newSplitTab.setAttribute("aria-selected", "false");
+    newSplitTab.textContent = name;
+
+    document.getElementById("tabs").appendChild(newSplitTab);
+}
+
+function makeTabContent(html){
     let a = document.getElementById("myTabContent");
     a.insertAdjacentHTML('beforeend',html);
 }
@@ -142,24 +157,32 @@ function saveMates(){
 }
 
 async function sendEmail(){
+    
     try{
         const result = await postData();
         if(result.status == 200){
             $.post('/api/shareSplits', email);
             summaryPage(); //just call this to show up summary page
+            $('#calculate').attr('onclick', 'recalculate()');
+            $('#calculate').text('Recalculate');
+
         }
     }
     catch(error){
         console.log(error);
     }
 }
+function recalculate(){
+    //TODO
+    console.log('reeee')
+};
 
 function summaryPage(){
     $.get('/api/summary', function(data){
         firstValue = Object.values(data)[0];
         key = Object.keys(firstValue);
         value = Object.values(firstValue);
-        
+        $('#summaryList').empty();
         for(let x=0; x < value.length; x++){
             $('#summaryList').append($('<tr>')
                 .append($('<td>').attr('class', 'mate').text(key[x]))
@@ -198,12 +221,30 @@ function discardChanges(){
     newSplitButton.removeAttribute("hidden");
 
     unselectTabs();
+    createTable();
     showTab("homeTab", "nav-home");
     removeTab("newSplitTab");
+    removeTab("nav-newSplit");
+
+}
+
+function removeExcessTab(){
+    tabs = document.getElementById('tabs').children;
+    tabContents = document.getElementById('myTabContent').children;
+
+    for(let i = 2; i<tabs.length; i++){
+        tabs[i].remove();
+        document.getElementById(tabContents[i].id).remove();
+    }
 }
 
 function removeTab(tab){
     document.getElementById(tab).remove();
+}
+
+function closeTab(){
+    removeExcessTab();
+    showTab("homeTab", "nav-home");
 }
 
 async function postData(){
@@ -229,7 +270,11 @@ async function postData(){
         mateString = "None";
     }
 
+    let myDate = new Date(Date.now());
+    let dateCreated = myDate.getFullYear() + '-' +('0' + (myDate.getMonth()+1)).slice(-2)+ '-' +  ('0' + myDate.getDate()).slice(-2) + ' '+myDate.getHours()+ ':'+('0' + (myDate.getMinutes())).slice(-2)+ ':'+myDate.getSeconds();
+ 
     let summary = {};
+    splitName = document.getElementById("splitNameField").textContent;
     for(let x=1; x < totalRows; x++){
         item = document.getElementsByTagName("table")[1].rows[x].cells[1].textContent;
         cost = document.getElementsByTagName("table")[1].rows[x].cells[2].textContent;
@@ -238,10 +283,12 @@ async function postData(){
             items: item,
             costs: cost,
             mates: mates,
-            mateList: mateString
+            mateList: mateString,
+            splitName: splitName,
+            date: dateCreated
         }
     }
-    
+
     const result = await $.post("/api/post", summary);
     return result;
 }
@@ -270,11 +317,11 @@ function archiveSystem(event){
 newSplitHtml = `<div class="tab-pane fade" id="nav-newSplit" role="tabpanel" aria-labelledby="newSplit-tab">
 
 <div class="d-grid gap-2 d-flex py-2">
-    <h2 contenteditable='true' class='mr-auto p-2'>New Split</h2>
+    <h2 contenteditable='true' class='mr-auto' id='splitNameField'>New Split</h2>
     <button class="btn btn-success p-2" onclick="addItem()">
         Add Item
     </button>
-    <button type="button" class="btn btn-outline-success p-2" data-bs-toggle="modal" data-bs-target="#editMateListModal" onclick="showCurrentMates()">
+    <button type="button" class="btn btn-outline-success" data-bs-toggle="modal" data-bs-target="#editMateListModal" onclick="showCurrentMates()">
         Edit Mates
     </button>
 </div>
@@ -303,9 +350,8 @@ newSplitHtml = `<div class="tab-pane fade" id="nav-newSplit" role="tabpanel" ari
     </div>
     
     <div class="d-grid gap-2 d-flex justify-content-end py-2" id="splitButtons">
-        <button type="submit" class="btn btn-success" onclick="postData()">Save & Calculate</button>
-        <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#confirmationModal">Cancel</button>
-        <button type="button" class="btn btn-success" onclick="close()">Close</button>
+        <button type="submit" class="btn btn-success" id="calculate" onclick="sendEmail();">Save & Calculate</button>
+        <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#confirmationModal">Close</button>
     </div>
 </div>
 
@@ -346,7 +392,7 @@ newSplitHtml = `<div class="tab-pane fade" id="nav-newSplit" role="tabpanel" ari
         
             <div class="modal-footer border-top-0 d-flex justify-content-between">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-success" data-bs-dismiss="modal" onclick="saveMates()">Save</button>
+                <button type="button" class="btn btn-success" id="saveMates" data-bs-dismiss="modal" onclick="saveMates()">Save</button>
             </div>
         </div>
     </div>

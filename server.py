@@ -82,8 +82,10 @@ def createSplitDatabase():
     updateUserSplitId(uid, session['email'])
     summaryRef = db.reference('/Splits/splitId_' + uid + "/Mates")
     sharedMatesRef = db.reference('/Splits/splitId_' + uid + "/SharedMates")
+    splitNameRef = db.reference('/Splits/splitId_' + uid + "/SplitName")
+    dateCreatedRef = db.reference('/Splits/splitId_' + uid + "/DateCreated")
 
-    for i in range(1, int(len(request.form) / 4) + 1):
+    for i in range(1, int(len(request.form) / 6) + 1):
         itemName = request.form[str(i) + "[items]"]
         itemCost = request.form[str(i) + "[costs]"]
         mates = request.form[str(i) + "[mates]"]
@@ -113,6 +115,9 @@ def createSplitDatabase():
         }
         itemRef = db.reference('/Splits/splitId_' + uid + "/Items/" + itemName)
         itemRef.push().set(itemData)
+    splitNameRef.push().set(request.form[str(1) + "[splitName]"])
+    dateCreatedRef.push().set(request.form[str(1) + "[date]"])
+
     summaryRef.push().set(summary)
     sharedMatesRef.push().set(sharedMates)
     return jsonify({'status': 200})
@@ -130,6 +135,7 @@ def getUserTablePref():
 def getUserSplit():
     userSplit = {}
     splitList = []
+    refIdList = []
     ref = db.reference('/Users')
     getRef = ref.get()
     email = session['email']
@@ -144,6 +150,7 @@ def getUserSplit():
                 for x in getUserSplitId(userSplitsRef):
                     splitRef = db.reference('/Splits/splitId_' + x)
                     splitData = splitRef.get()
+                    refIdList.append(x)
                     for val in splitData.values():
                         resp = {
                             "data": val
@@ -151,7 +158,8 @@ def getUserSplit():
                         splitList.append(resp)
                 userSplit = {
                     "split": splitList,
-                    "length": len(getUserSplitId(userSplitsRef))
+                    "length": len(getUserSplitId(userSplitsRef)),
+                    "referenceId": refIdList,
                 }
                 return jsonify(userSplit)
 
@@ -262,6 +270,15 @@ def createSummary():
                         for summary in getSplit.values():
                             result = summary
     return jsonify({"summary": result})
+
+@app.route('/api/viewSplit', methods=['GET'])
+def getRows():
+    splitId = request.args.get('splitId')
+    splitRef = db.reference('/Splits/' +'splitId_' + splitId).get()
+    summaryRows=[]
+    return jsonify(splitRef)
+
+
 
 #Helper Functions
 def getUserSplitId(ref):
