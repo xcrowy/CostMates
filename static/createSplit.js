@@ -121,6 +121,8 @@ function populateDropdown(){
 }
 
 function showCurrentMates(){
+    document.getElementById('emailError').textContent='';
+    document.getElementById('newMateEmail').value='';
     // $.get('/api/getSharedMates', function(data){
     //     getFirstValue = Object.values(data)[0];
     //     getNextValue = Object.values(getFirstValue)[0];
@@ -201,8 +203,10 @@ function addMates(){
                 .append($('<td>').attr('class','email').text(e.value))
                 .append($('<td>').append($("<button>").attr('type','button').attr('class','btn btn-danger btn-sm').attr('onclick', 'removeRow(this)').text('x'))));
             e.value = '';
+            document.getElementById('emailError').textContent='User does not exist';
         }
         else{
+            document.getElementById('emailError').textContent='User does not exist';
             console.log("Does not exist");
             //TODO: display a text that says user does not exist
         }
@@ -381,8 +385,9 @@ newSplitHtml = `<div class="tab-pane fade" id="nav-newSplit" role="tabpanel" ari
                 </table>
             </div>
         
-
+            <p class="text-danger px-md-5" id='emailError'></p>
             <div class="input-group px-md-5">
+                
                 <input type="text" class="form-control" id="newMateEmail" placeholder="Email" aria-label="Email" aria-describedby="basic-addon2" type="email" required>
                 <div class="input-group-append">
                     <button class="btn btn-outline-secondary" type="button" onclick="addMates()"><i class="bi bi-person-plus-fill"></i></button>
