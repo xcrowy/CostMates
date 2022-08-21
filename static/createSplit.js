@@ -208,7 +208,6 @@ function addMates(){
         else{
             document.getElementById('emailError').textContent='User does not exist';
             console.log("Does not exist");
-            //TODO: display a text that says user does not exist
         }
     })
 }
