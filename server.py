@@ -84,7 +84,6 @@ def createSplitDatabase():
     sharedMatesRef = db.reference('/Splits/splitId_' + uid + "/SharedMates")
     splitNameRef = db.reference('/Splits/splitId_' + uid + "/SplitName")
     dateCreatedRef = db.reference('/Splits/splitId_' + uid + "/DateCreated")
-
     for i in range(1, int(len(request.form) / 6) + 1):
         itemName = request.form[str(i) + "[items]"]
         itemCost = request.form[str(i) + "[costs]"]
@@ -120,8 +119,62 @@ def createSplitDatabase():
 
     summaryRef.push().set(summary)
     sharedMatesRef.push().set(sharedMates)
-    return jsonify({'status': 200})
+    return jsonify({'status': 200,
+    'splitId': uid})
 
+    
+@app.route('/api/updateData', methods=['POST'])
+def updateSplitDatabase():
+    user = auth.get_user_by_email(session['email'])
+    summary = {}
+    sharedMates = {}
+    uid =  request.form['sid']
+    sumLength = request.form['sumLen']
+    db.reference('/Splits/splitId_' + uid).delete()
+    summaryRef = db.reference('/Splits/splitId_' + uid + "/Mates")
+    sharedMatesRef = db.reference('/Splits/splitId_' + uid + "/SharedMates")
+    splitNameRef = db.reference('/Splits/splitId_' + uid + "/SplitName")
+    dateCreatedRef = db.reference('/Splits/splitId_' + uid + "/DateCreated")
+
+    for i in range(1, int(sumLength) + 1):
+        itemName = request.form["sum[" + str(i) + "]" + "[items]"]
+        itemCost = request.form["sum[" + str(i) + "]" + "[costs]"]
+        mates = request.form["sum[" + str(i) + "]" + "[mates]"]
+        mates = mates.split(',')
+
+        mateList = request.form["sum[" + str(i) + "]" + "[mateList]"]
+        mateList = mateList.split(',')
+        mateList.append(user.display_name)
+        for m in mateList:
+            m = m.strip()
+            if m not in sharedMates:
+                sharedMates[m] = True
+        
+        for mate in mates:
+            mate = mate.strip()
+            split_cost = float(itemCost) / len(mates)
+            split_cost = round(split_cost, 2)
+            if mate in summary:
+                summary[mate] += split_cost
+            else:
+                summary[mate] = 0
+                summary[mate] += split_cost
+    
+        itemData = {
+            "Users": mates,
+            "Total": float(itemCost)
+        }
+        itemRef = db.reference('/Splits/splitId_' + uid + "/Items/" + itemName)
+        itemRef.push().set(itemData)
+    splitNameRef.push().set(request.form["sum[" + str(i) + "]" + "[splitName]"])
+    dateCreatedRef.push().set(request.form["sum[" + str(i) + "]" + "[date]"])
+
+    summaryRef.push().set(summary)
+    sharedMatesRef.push().set(sharedMates)
+    return jsonify({'status': 200,
+    'splitId': request.form})
+
+    
 @app.route('/api/updateHeaders', methods=['POST'])
 def getUserTablePref():
     position = {}

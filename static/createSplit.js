@@ -165,8 +165,6 @@ async function sendEmail(){
         if(result.status == 200){
             $.post('/api/shareSplits', email);
             summaryPage(); //just call this to show up summary page
-            $('#calculate').attr('onclick', 'recalculate()');
-            $('#calculate').text('Recalculate');
 
         }
     }
@@ -174,9 +172,17 @@ async function sendEmail(){
         console.log(error);
     }
 }
-function recalculate(){
-    //TODO
-    console.log('reeee')
+async function recalculate(uid){
+    try{
+        const result = await updateData(uid);
+        if(result.status == 200){
+            summaryPage(); //just call this to show up summary page
+
+        }
+    }
+    catch(error){
+        console.log(error);
+    }
 };
 
 function summaryPage(){
@@ -203,7 +209,7 @@ function addMates(){
                 .append($('<td>').attr('class','email').text(e.value))
                 .append($('<td>').append($("<button>").attr('type','button').attr('class','btn btn-danger btn-sm').attr('onclick', 'removeRow(this)').text('x'))));
             e.value = '';
-            document.getElementById('emailError').textContent='User does not exist';
+            document.getElementById('emailError').textContent='';
         }
         else{
             document.getElementById('emailError').textContent='User does not exist';
@@ -293,6 +299,54 @@ async function postData(){
     }
 
     const result = await $.post("/api/post", summary);
+    $('#calculate').attr('onclick', "recalculate('" + result.splitId +"')");
+    $('#calculate').text('Recalculate');
+    return result;
+}
+
+async function updateData(uid){
+    $("#summary").empty();
+    $("#summary").append($('<thead>')
+        .append($('<tr>')
+        .append($('<th>').text('Mate')).append($('<th>').text('Cost')))).append($('<tbody>').attr('id', 'summaryList'));
+    $("#summary").removeClass('d-none');
+
+    let [item, cost, mates] = ["", "", ""];
+
+    let totalRows = document.getElementById("splitForm").rows.length;
+    let mateList = document.getElementById("currentMateList");
+    let tempList = [];
+    let mateString = "";
+    if(mateList.rows.length != 0){
+        for(let x=0; x < mateList.rows.length; x++){
+            tempList.push(mateList.rows[x].childNodes[0].textContent)
+        }
+        mateString = tempList.join(", ");
+    }
+    else{
+        mateString = "None";
+    }
+
+    let myDate = new Date(Date.now());
+    let dateCreated = myDate.getFullYear() + '-' +('0' + (myDate.getMonth()+1)).slice(-2)+ '-' +  ('0' + myDate.getDate()).slice(-2) + ' '+myDate.getHours()+ ':'+('0' + (myDate.getMinutes())).slice(-2)+ ':'+myDate.getSeconds();
+ 
+    let summary = {};
+    splitName = document.getElementById("splitNameField").textContent;
+    for(let x=1; x < totalRows; x++){
+        item = document.getElementsByTagName("table")[1].rows[x].cells[1].textContent;
+        cost = document.getElementsByTagName("table")[1].rows[x].cells[2].textContent;
+        mates = document.getElementsByTagName("table")[1].rows[x].cells[3].childNodes[0].childNodes[1].title
+        summary[x] = {
+            items: item,
+            costs: cost,
+            mates: mates,
+            mateList: mateString,
+            splitName: splitName,
+            date: dateCreated
+        }
+    }
+
+    const result = await $.post("/api/updateData", {sum:summary, sid: uid, sumLen: Object.keys(summary).length});
     return result;
 }
 
@@ -406,19 +460,19 @@ newSplitHtml = `<div class="tab-pane fade" id="nav-newSplit" role="tabpanel" ari
         <div class="modal-content" style="min-width: 500px;">
             <div class="modal-header border-bottom-0">
                 <h4 class="modal-title" id="confirmationModalLabel">
-                    You have unsaved changes.
+                    You may have unsaved changes.
                 </h4>
                 <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
                 </button>
             </div>
             <div class="modal-body px-md-5">
-                Are you sure you want to continue?
+                Are you sure you want to close this tab?
             </div>
 
             <div class="modal-footer border-top-0 d-flex justify-content-between">
-                <button type="button" class="btn btn-success" data-bs-dismiss="modal" onclick="continueEditing()">No, continue editing</button>
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" onclick="discardChanges()">Yes, discard changes</button>
+                <button type="button" class="btn btn-success" data-bs-dismiss="modal">No, continue editing</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" onclick="discardChanges()">Yes, close tab</button>
             </div>
         </div>
     </div>
