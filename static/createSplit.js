@@ -1,6 +1,3 @@
-// var mates = [];
-// var email = [];
-
 var mates;
 
 var itemIndex = document.getElementsByName("items").length;
@@ -37,6 +34,7 @@ function createNewSplitTab(){
 
     let newSplitButton = document.getElementById("newSplitButton");
     newSplitButton.setAttribute("hidden","");
+    saveMates();
 }
 
 function createTab(id, targetID, name){
@@ -90,7 +88,8 @@ function addItem() {
         );
     $("#outside").append($("<select>").attr('id','mateDropDown').attr('class','selectpicker').prop('multiple',true))
 
-
+    // showCurrentMates();
+    // saveMates();
     populateDropdown();
 
 }
@@ -99,49 +98,51 @@ function populateDropdown(){
     let dropdowns = document.getElementsByClassName("selectpicker");
     let getMateList = document.getElementById("currentMateList");
     let mateList = []
-    $.get('/api/getLoggedUser', function(data){
-        if(getMateList.length != 0){
-            mateList.push(data.user);
-            for(let x=0; x < getMateList.children.length; x++){
-                mateList.push(getMateList.children[x].querySelector('.name').textContent);
-            }
+    if(getMateList.length != 0){
+        for(let x=0; x < getMateList.children.length; x++){
+            mateList.push(getMateList.children[x].querySelector('.name').textContent);
         }
-        
-        for(let i = 0; i < dropdowns.length; i++){
-            for(let j=0; j < mateList.length; j++){
-                let o = document.createElement("option");
-                o.setAttribute("value", j);
-                o.text = mateList[j];
-                dropdowns[i].appendChild(o);
-            }
+    }
+    
+    for(let i = 0; i < dropdowns.length; i++){
+        for(let j=0; j < mateList.length; j++){
+            let o = document.createElement("option");
+            o.setAttribute("value", j);
+            o.text = mateList[j];
+            dropdowns[i].appendChild(o);
         }
-        $('.selectpicker').selectpicker();
-    })
+    }
+    $('.selectpicker').selectpicker();
 
 }
 
-function showCurrentMates(){
-    document.getElementById('emailError').textContent='';
-    document.getElementById('newMateEmail').value='';
-    // $.get('/api/getSharedMates', function(data){
-    //     getFirstValue = Object.values(data)[0];
-    //     getNextValue = Object.values(getFirstValue)[0];
-    //     getLastValue = Object.values(getNextValue)[0];
-    //     mates = Object.keys(getLastValue);
-    //     console.log(mates);
-        // $('#currentMateList').empty();
-        
-        // for(let i=0; i< mates.length; i++){
-        //     $('#currentMateList').append($('<tr>')
-        //     .append($('<td>').attr('class','name').text(mates[i]))
-        //     .append($('<td>').attr('class','email').text(email[i]))
-        //     .append($('<td>').append($("<button>").attr('type','button').attr('class','btn btn-danger btn-sm btnRemoveMate').text('x')))
-        // )}
-    // })
+async function showCurrentMates(){
+    let mateList = document.getElementById("currentMateList");
+
+    if(mateList.rows.length === 0){
+        let result = $.get('/api/getLoggedUser', function(data){
+            $('#currentMateList').append($('<tr>')
+                    .append($('<td>').attr('class','name').text(data.user))
+                    .append($('<td>').attr('class','email').text(data.email))
+                    .append($('<td>')));
+            document.getElementById('emailError').textContent='';
+        })
+        return result;
+    }
+    else{
+        return {'success': 0};
+    }
+
 }
 
 var email = {}
-function saveMates(){
+async function saveMates(){
+    let result = await showCurrentMates();
+
+    if(result.success == 200){
+        populateDropdown();
+    }
+
     let l = document.getElementById("currentMateList");
     for(let i=0; i<l.children.length; i++){
         let row = l.children[i];
@@ -156,6 +157,8 @@ function saveMates(){
     setTimeout(() => {
         $('.selectpicker').selectpicker('refresh');
     }, 100);
+
+    console.log("hi")
 }
 
 async function sendEmail(){
@@ -164,7 +167,7 @@ async function sendEmail(){
         const result = await postData();
         if(result.status == 200){
             $.post('/api/shareSplits', email);
-            summaryPage(); //just call this to show up summary page
+            summaryPage();
 
         }
     }
@@ -176,7 +179,8 @@ async function recalculate(uid){
     try{
         const result = await updateData(uid);
         if(result.status == 200){
-            summaryPage(); //just call this to show up summary page
+            $.post('/api/shareSplits', email);
+            summaryPage();
 
         }
     }
@@ -213,16 +217,12 @@ function addMates(){
         }
         else{
             document.getElementById('emailError').textContent='User does not exist';
-            console.log("Does not exist");
         }
     })
 }
 
-function removeRow(row){{
-    console.log(row);
+function removeRow(row){
     $(row).closest('tr').remove();
-}
-
 }
 
 function discardChanges(){
@@ -230,7 +230,7 @@ function discardChanges(){
     newSplitButton.removeAttribute("hidden");
 
     unselectTabs();
-    createTable();
+    createHomeTable();
     showTab("homeTab", "nav-home");
     removeTab("newSplitTab");
     removeTab("nav-newSplit");
@@ -269,15 +269,11 @@ async function postData(){
     let mateList = document.getElementById("currentMateList");
     let tempList = [];
     let mateString = "";
-    if(mateList.rows.length != 0){
-        for(let x=0; x < mateList.rows.length; x++){
-            tempList.push(mateList.rows[x].childNodes[0].textContent)
-        }
-        mateString = tempList.join(", ");
+    
+    for(let x=0; x < mateList.rows.length; x++){
+        tempList.push(mateList.rows[x].childNodes[0].textContent)
     }
-    else{
-        mateString = "None";
-    }
+    mateString = tempList.join(", ");
 
     let myDate = new Date(Date.now());
     let dateCreated = myDate.getFullYear() + '-' +('0' + (myDate.getMonth()+1)).slice(-2)+ '-' +  ('0' + myDate.getDate()).slice(-2) + ' '+myDate.getHours()+ ':'+('0' + (myDate.getMinutes())).slice(-2)+ ':'+myDate.getSeconds();
@@ -285,9 +281,9 @@ async function postData(){
     let summary = {};
     splitName = document.getElementById("splitNameField").textContent;
     for(let x=1; x < totalRows; x++){
-        item = document.getElementsByTagName("table")[1].rows[x].cells[1].textContent;
-        cost = document.getElementsByTagName("table")[1].rows[x].cells[2].textContent;
-        mates = document.getElementsByTagName("table")[1].rows[x].cells[3].childNodes[0].childNodes[1].title
+        item = document.getElementsByTagName("table")[2].rows[x].cells[1].textContent;
+        cost = document.getElementsByTagName("table")[2].rows[x].cells[2].textContent;
+        mates = document.getElementsByTagName("table")[2].rows[x].cells[3].childNodes[0].childNodes[1].title
         summary[x] = {
             items: item,
             costs: cost,
@@ -317,15 +313,10 @@ async function updateData(uid){
     let mateList = document.getElementById("currentMateList");
     let tempList = [];
     let mateString = "";
-    if(mateList.rows.length != 0){
-        for(let x=0; x < mateList.rows.length; x++){
-            tempList.push(mateList.rows[x].childNodes[0].textContent)
-        }
-        mateString = tempList.join(", ");
+    for(let x=0; x < mateList.rows.length; x++){
+        tempList.push(mateList.rows[x].childNodes[0].textContent)
     }
-    else{
-        mateString = "None";
-    }
+    mateString = tempList.join(", ");
 
     let myDate = new Date(Date.now());
     let dateCreated = myDate.getFullYear() + '-' +('0' + (myDate.getMonth()+1)).slice(-2)+ '-' +  ('0' + myDate.getDate()).slice(-2) + ' '+myDate.getHours()+ ':'+('0' + (myDate.getMinutes())).slice(-2)+ ':'+myDate.getSeconds();
@@ -333,9 +324,9 @@ async function updateData(uid){
     let summary = {};
     splitName = document.getElementById("splitNameField").textContent;
     for(let x=1; x < totalRows; x++){
-        item = document.getElementsByTagName("table")[1].rows[x].cells[1].textContent;
-        cost = document.getElementsByTagName("table")[1].rows[x].cells[2].textContent;
-        mates = document.getElementsByTagName("table")[1].rows[x].cells[3].childNodes[0].childNodes[1].title
+        item = document.getElementsByTagName("table")[2].rows[x].cells[1].textContent;
+        cost = document.getElementsByTagName("table")[2].rows[x].cells[2].textContent;
+        mates = document.getElementsByTagName("table")[2].rows[x].cells[3].childNodes[0].childNodes[1].title
         summary[x] = {
             items: item,
             costs: cost,
@@ -349,27 +340,6 @@ async function updateData(uid){
     const result = await $.post("/api/updateData", {sum:summary, sid: uid, sumLen: Object.keys(summary).length});
     return result;
 }
-
-function updateHeaders(){
-    let position = {}
-
-    position = {
-        0: document.getElementsByTagName("table")[0].rows[0].cells[1].textContent,
-        1: document.getElementsByTagName("table")[0].rows[0].cells[2].textContent,
-        2: document.getElementsByTagName("table")[0].rows[0].cells[3].textContent,
-        3: document.getElementsByTagName("table")[0].rows[0].cells[4].textContent,
-        4: document.getElementsByTagName("table")[0].rows[0].cells[5].textContent,
-    }
-    $.post("/api/updateHeaders", position);
-}
-
-function archiveSystem(event){
-    console.log("Archived");
-    getTd = event.target.parentNode;
-    getRow = getTd.parentNode;
-    console.log(getRow); //Move row to archive
-}
-
 
 newSplitHtml = `<div class="tab-pane fade" id="nav-newSplit" role="tabpanel" aria-labelledby="newSplit-tab">
 

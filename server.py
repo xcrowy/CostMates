@@ -1,4 +1,5 @@
 from datetime import timedelta
+from getpass import getuser
 from flask import Flask, render_template, jsonify, request, redirect, session, Response
 import firebase_admin
 from firebase_admin import credentials
@@ -88,11 +89,12 @@ def createSplitDatabase():
         itemName = request.form[str(i) + "[items]"]
         itemCost = request.form[str(i) + "[costs]"]
         mates = request.form[str(i) + "[mates]"]
+
         mates = mates.split(',')
 
         mateList = request.form[str(i) + "[mateList]"]
         mateList = mateList.split(',')
-        mateList.append(user.display_name)
+
         for m in mateList:
             m = m.strip()
             if m not in sharedMates:
@@ -112,11 +114,11 @@ def createSplitDatabase():
             "Users": mates,
             "Total": float(itemCost)
         }
+
         itemRef = db.reference('/Splits/splitId_' + uid + "/Items/" + itemName)
         itemRef.push().set(itemData)
     splitNameRef.push().set(request.form[str(1) + "[splitName]"])
     dateCreatedRef.push().set(request.form[str(1) + "[date]"])
-
     summaryRef.push().set(summary)
     sharedMatesRef.push().set(sharedMates)
     return jsonify({'status': 200,
@@ -174,15 +176,6 @@ def updateSplitDatabase():
     return jsonify({'status': 200,
     'splitId': request.form})
 
-    
-@app.route('/api/updateHeaders', methods=['POST'])
-def getUserTablePref():
-    position = {}
-    for i in range(0, int(len(request.form))):
-        pos = request.form[str(i)]
-        position[i] = pos
-    updateUserHeaderPref(position)
-    return jsonify({'status': 200})
 
 @app.route('/api/splits', methods=['GET'])
 def getUserSplit():
@@ -212,7 +205,7 @@ def getUserSplit():
                 userSplit = {
                     "split": splitList,
                     "length": len(getUserSplitId(userSplitsRef)),
-                    "referenceId": refIdList,
+                    "referenceId": refIdList
                 }
                 return jsonify(userSplit)
 
@@ -220,7 +213,9 @@ def getUserSplit():
 def getCurrentLoggedUser():
      getUser = auth.get_user_by_email(session['email'])
      user = {
-        "user": getUser.display_name
+        "user": getUser.display_name,
+        "email": getUser.email,
+        'success': 200
      }
      return jsonify(user)
 
@@ -258,7 +253,6 @@ def shareSplits():
                 if getSplit != None:
                     for sk, sv in getSplit.items():
                         sharedSplit = sv
-                    
     for i in range(0, int(len(request.form))):
         email = request.form[str(i) + "[email]"]
         getUser = auth.get_user_by_email(email)
@@ -278,30 +272,6 @@ def shareSplits():
                     else:
                         userSplitsRef.push().set(sharedSplit)
     return jsonify({'status': 200})
-
-@app.route('/api/price', methods=['GET'])
-def getPrice():
-    getUser = auth.get_user_by_email(session['email'])
-    userRef = db.reference('/Users')
-    getRef = userRef.get()
-    priceList = []
-    for key, value in getRef.items():
-        dataRef = db.reference('/Users/' + key)
-        getData = dataRef.get()
-        for k, v in getData.items():
-            if k == getUser.uid:
-                userSplitsRef = db.reference('/Users/' + key + "/" + k + "/splits")
-                getSplit = userSplitsRef.get()
-                for val in getSplit.values():
-                    for v in val.values():
-                        splitRef = db.reference('/Splits/' + "splitId_" + v + '/Mates')
-                        getSplit = splitRef.get()
-                        for price in getSplit.values():
-                            if(getUser.display_name in list(price.keys())):
-                                priceList.append(price[getUser.display_name])
-                            else:
-                                priceList.append(0)
-    return jsonify({"price": priceList})
 
 @app.route('/api/summary', methods=['GET'])
 def createSummary():
@@ -331,7 +301,89 @@ def getRows():
     summaryRows=[]
     return jsonify(splitRef)
 
+@app.route('/api/postArchive', methods=['POST'])
+def archiveSystem():
+    splitId = request.form['splitId']
+    getUser = auth.get_user_by_email(session['email'])
+    userRef = db.reference('/Users')
+    getRef = userRef.get()
 
+    for key, value in getRef.items():
+        dataRef = db.reference('/Users/' + key)
+        getData = dataRef.get()
+        for k, v in getData.items():
+            if k == getUser.uid:
+                userSplitRef = db.reference('/Users/' + key + "/" + k + "/splits")
+                userSplit = userSplitRef.get()
+                for sk, sv in userSplit.items():
+                    for val in sv.values():
+                        if val == splitId:
+                            archiveRef = db.reference('/Users/' + key + "/" + k + "/archive")
+                            archiveRef.push().set({
+                                "splitId": splitId
+                            })
+                            userSplitRef.child(sk).set({})
+    return jsonify({'success': 200})
+
+
+@app.route('/api/getArchiveData', methods=['GET'])
+def getSplitDataById():
+    splitList = []
+    resp = {}
+    
+    getUser = auth.get_user_by_email(session['email'])
+    userRef = db.reference('/Users')
+    getRef = userRef.get()
+    
+    onloadList = []
+    for key, value in getRef.items():
+        dataRef = db.reference('/Users/' + key)
+        getData = dataRef.get()
+        for k, v in getData.items():
+            if k == getUser.uid:
+                archiveRef = db.reference('/Users/' + key + "/" + k + "/archive")
+                archiveData = archiveRef.get()
+                if(archiveData != None):
+                    for val in archiveData.values():
+                        splitRef = db.reference('/Splits/splitId_' + val['splitId'])
+                        splitData = splitRef.get()
+                        for v in splitData.values():
+                            resp = {
+                                "data": v
+                            }
+                            splitList.append(resp)
+                            onloadArchive = {
+                                "splitId": val['splitId']
+                            }
+                        onloadList.append(onloadArchive)
+    return jsonify(splitList, onloadList)
+
+@app.route('/api/unarchiveData',  methods=['POST'])
+def unarchiveData():
+    getId = request.form['splitId']
+    getUser = auth.get_user_by_email(session['email'])
+    userRef = db.reference('/Users')
+    getRef = userRef.get()
+
+    for key, value in getRef.items():
+        dataRef = db.reference('/Users/' + key)
+        getData = dataRef.get()
+        for k, v in getData.items():
+            if k == getUser.uid:
+                archiveRef = db.reference('/Users/' + key + "/" + k + "/archive")
+                userSplitRef = db.reference('/Users/' + key + "/" + k + "/splits")
+                archiveData = archiveRef.get()
+                userSplitRef.get()
+                if archiveData != None:
+                    for ak, av in archiveData.items():
+                        for val in av.values():
+                            if getId == val:
+                                userSplitRef.push().set({
+                                    "splitId": getId
+                                })
+                                archiveRef.child(ak).set({})
+
+    return jsonify({'success': 200})
 
 #Helper Functions
 def getUserSplitId(ref):
@@ -359,19 +411,9 @@ def createUserDatabase(email, userId):
     }
     userRef.push().set(data)
 
-def updateUserHeaderPref(position):
-    ref = db.reference('/Users')
-    getUser = ref.get()
-    user = auth.get_user_by_email(session['email'])
-    uid = user.uid
-    for key, value in getUser.items():
-        dataRef = db.reference('/Users/' + key)
-        getData = dataRef.get()
-        for k, v in getData.items():
-            if k == uid:
-                dataRef.child(k).update({"order": position})
 
 def updateUserSplitId(splitId, email):
+    print("hello")
     _uid = str(uuid.uuid4())
     ref = db.reference('/Users')
     getUser = ref.get()
@@ -383,7 +425,6 @@ def updateUserSplitId(splitId, email):
         for k, v in getData.items():
             if k == uid:
                 dataRef.child(k).child("splits").push({_uid: splitId})
-
 
 def create_user(userId: str, displayName: str, email: str, password: str) -> UserRecord:
     return auth.create_user(uid=userId, display_name=displayName, email=email, password=password)
