@@ -294,6 +294,7 @@ async function postData(){
         }
     }
 
+
     const result = await $.post("/api/post", summary);
     $('#calculate').attr('onclick', "recalculate('" + result.splitId +"')");
     $('#calculate').text('Recalculate');

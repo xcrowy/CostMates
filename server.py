@@ -89,10 +89,9 @@ def createSplitDatabase():
         itemName = request.form[str(i) + "[items]"]
         itemCost = request.form[str(i) + "[costs]"]
         mates = request.form[str(i) + "[mates]"]
+        mateList = request.form[str(i) + "[mateList]"]
 
         mates = mates.split(',')
-
-        mateList = request.form[str(i) + "[mateList]"]
         mateList = mateList.split(',')
 
         for m in mateList:
@@ -238,6 +237,7 @@ def checkUserExist():
 
 @app.route('/api/shareSplits', methods=['POST'])
 def shareSplits():
+    add = True
     getSessionUser = auth.get_user_by_email(session['email'])
     uid = getSessionUser.uid
     sharedSplit = {}
@@ -267,8 +267,10 @@ def shareSplits():
                     if getSplit != None:
                         for sk, sv in getSplit.items():
                             for x in list(sharedSplit.values()):
-                                if x not in list(sv.values()):
-                                    userSplitsRef.push().set(sharedSplit)
+                                if x in list(sv.values()):
+                                    add = False
+                        if add:
+                            userSplitsRef.push().set(sharedSplit)
                     else:
                         userSplitsRef.push().set(sharedSplit)
     return jsonify({'status': 200})
