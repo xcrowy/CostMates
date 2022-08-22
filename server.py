@@ -52,7 +52,6 @@ def register():
         email = request.form['emailRegister'].lower()
         password = request.form['passwordRegister']
         passwordCheck = request.form['passwordCheck']
-        print("Name: " + displayName + "\nEmail: " + email + "\nPassword: " + password + "\npasswordCheck: " + passwordCheck)
         if (displayName and email and password and passwordCheck):
             if password == passwordCheck:
                 userId = str(uuid6())
@@ -416,7 +415,6 @@ def createUserDatabase(email, userId):
 
 
 def updateUserSplitId(splitId, email):
-    print("hello")
     _uid = str(uuid.uuid4())
     ref = db.reference('/Users')
     getUser = ref.get()

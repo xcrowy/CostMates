@@ -158,7 +158,6 @@ async function saveMates(){
         $('.selectpicker').selectpicker('refresh');
     }, 100);
 
-    console.log("hi")
 }
 
 async function sendEmail(){
