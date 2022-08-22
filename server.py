@@ -273,6 +273,7 @@ def shareSplits():
                             userSplitsRef.push().set(sharedSplit)
                     else:
                         userSplitsRef.push().set(sharedSplit)
+            add = True
     return jsonify({'status': 200})
 
 @app.route('/api/summary', methods=['GET'])

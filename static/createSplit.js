@@ -84,7 +84,7 @@ function addItem() {
             .append($('<td>').append("<div>").attr('contenteditable','true').attr('name', 'items'))
             .append($('<td>').append("<div>").attr('contenteditable','true').attr('name', 'costs'))
             .append($('<td>').append($("<select>").attr('id','mateDropDown').attr('class','selectpicker').attr('data-container','body').prop('multiple',true)))
-            .append($('<td>').append($("<button>").attr('type','button').attr('class','btn btn-danger btn-sm').attr('onclick', 'removeRow(this)').text('x')))
+            .append($('<td>').append("<div>").attr('contenteditable','true').attr('name', 'costs').attr('inputmode', 'decimal').attr('class', 'money').on('keydown', money).on('focusout', format))
         );
     $("#outside").append($("<select>").attr('id','mateDropDown').attr('class','selectpicker').prop('multiple',true))
 
