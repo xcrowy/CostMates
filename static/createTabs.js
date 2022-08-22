@@ -15,6 +15,7 @@ function createHomeTab(){
     homeTab.setAttribute("role", "tab");
     homeTab.setAttribute("aria-controls", "nav-home");
     homeTab.setAttribute("aria-selected", "true");
+    homeTab.setAttribute('onclick', 'createHomeTable()');
     homeTab.textContent = "Home";
     document.getElementById("tabs").appendChild(homeTab);
 }
@@ -28,6 +29,7 @@ function createArchiveTab(){
     archiveTab.setAttribute("role", "tab");
     archiveTab.setAttribute("aria-controls", "nav-archive");
     archiveTab.setAttribute("aria-selected", "false");
+    archiveTab.setAttribute("onclick", "createArchiveTable()");
     archiveTab.textContent = "Archive";
     document.getElementById("tabs").appendChild(archiveTab);
 }
