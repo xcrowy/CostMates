@@ -1,0 +1,12 @@
+body{
+    overflow: auto;
+    background: #94ebdb;
+    background: -webkit-linear-gradient(to bottom, #93ebdb, #ffffbc);
+    background: linear-gradient(to bottom, #93ebdb, #ffffbc);
+    min-height: 100vh;
+    padding: 20px;
+}
+
+.title {
+    margin-bottom: 3rem;
+}
